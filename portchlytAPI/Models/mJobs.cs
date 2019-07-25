@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using MongoDB.Driver;
 
 namespace portchlytAPI.Models
 {
@@ -22,9 +21,19 @@ namespace portchlytAPI.Models
         public string address;//the address of the client requested from will aquire through reverse geo coding
         public double price;
         public string description;//any notes the artsian may want to note
-        public List<mTask> tasks= new List<mTask>();//these are te bills or break down of the job
+        public List<mTask> tasks = new List<mTask>();//these are te bills or break down of the job
+        public JobStatus job_status;
 
-       
+        //if cancelled
+        public string reason_for_cancelling { get; set; }
+        public Who_cancelled who_cancelled { get; set; }//either client or artisan
+
+        public mArtisan get_artisan()
+        {
+            var col = globals.getDB().GetCollection<mArtisan>("mArtisan");
+            var artisan = col.Find(x => x.app_id == this.artisan_app_id).FirstOrDefault();
+            return artisan;
+        }
 
         public double getTheTotalPrice()
         {
@@ -37,10 +46,25 @@ namespace portchlytAPI.Models
         }
     }
 
+    public enum JobStatus
+    {
+        opened,
+        closed,
+        cancelled
+    }
+
     public class mTask
     {
         public string _id { get; set; }//id comes from  the artisan
         public string description { get; set; }//add a description to this task, eg light fitting
         public double price { get; set; }//the price of this item of the task
     }
+
+
+    public enum Who_cancelled
+    {
+        client,
+        artisan
+    }
+
 }

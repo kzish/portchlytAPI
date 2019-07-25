@@ -1,0 +1,74 @@
+﻿@{ Layout = "_Layout";}
+
+@{var job_requests = (IPagedList<portchlytAPI.Models.mArtisanServiceRequest>)ViewBag.job_requests;}
+@using PagedList.Core;
+@using PagedList;
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, PagedList.Core.Mvc
+
+<style>
+    .img_profile {
+        border-radius: 100px;
+    }
+</style>
+
+<script>
+
+    function get_address(label, lat, lng) {
+        $.ajax({
+            url: "/apiAdmin/get_address_from_geolocation?latitude=" + lat + "&longitude=" + lng,
+            success: function (address) {
+                $("#"+label).text(address);
+                $("#td_"+label).attr("title",address);
+            }
+        })
+    }
+</script>
+
+
+<h1>Requested Jobs</h1>
+
+
+<table class="table table-hover td_ellipsize">
+    <thead>
+        <tr>
+            <th scope="col">Requested Services</th>
+            <th scope="col">Client</th>
+            <th scope="col">Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var job in job_requests)
+        {
+        <tr>
+            <td title="@(String.Join(" " ,job.requested_services))">@(String.Join(" " ,job.requested_services))</td>
+            <td title="@job.client_mobile">@job.client_mobile</td>
+            <td id="td_@job._id">
+                <label id="@job._id">...</label>
+                <script>
+                        get_address("@job._id",@job.lat,@job.lon);
+                </script>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+
+@*pager indicator*@
+<pager class="pager-container"
+       list="@job_requests"
+       options="@PagedList.Core.Mvc.PagedListRenderOptions.PageNumbersOnly"
+       asp-action="job_requests"
+       asp-controller="Admin"
+       asp-route-keyword="" />
+
+
+
+
+
+
+
+
+

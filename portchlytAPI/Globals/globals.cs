@@ -16,6 +16,8 @@ using System.Net;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Html;
 using uPLibrary.Networking.M2Mqtt;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 /// <summary>
 /// Summary description for globals
@@ -33,8 +35,7 @@ public class globals
     public static string chatSupport = "<script type='text/javascript' id='553e47e969b4b7fe2b2999bada2bf72d' src='//porchlyt.com:8080/script.php?id=553e47e969b4b7fe2b2999bada2bf72d' defer></script>";
     public static string chatSupportWithEmail = chatSupport;
     //public static string chatSupportWithEmail = "<script type='text/javascript'>var lz_data = {overwrite:false,112:'<!--replace_me_with_Email-->'};</script><script type='text/javascript' id='553e47e969b4b7fe2b2999bada2bf72d' src='//porchlyt.com:8080/script.php?id=553e47e969b4b7fe2b2999bada2bf72d' defer></script>";
-    public static string cloudsms_api = "http://localhost:61506/api/";
-    public static string cloudsms_user_id = "12345";
+    public static string cloudsms_api = "http://localhost:61506/api";
     public static string MQTT_BROKER_ADDRESS = "127.0.0.1";
 
     public static MqttClient mqtt;
@@ -55,6 +56,24 @@ public class globals
 
     }
 
+    public static string get_address_from_geolocation(double latitude,double longitude)
+    {
+        try
+        {
+            WebClient wc = new WebClient();
+            var data = wc.DownloadString("https://maps.googleapis.com/maps/api/geocode/json?latlng=" 
+                + latitude + "," + longitude + "&key=AIzaSyCkHDfN-tHxIsL7WB6EAcd4m4F9KPtzP9E");
+            dynamic json = JsonConvert.DeserializeObject(data);
+            var results = json.results[0];
+            var address = results.formatted_address;
+
+
+            return address;
+        }catch(Exception ex)
+        {
+            return "unkown location";
+        }
+    }
 
 
 
@@ -113,14 +132,7 @@ public class globals
     //log data into a text file
     public static void logdata(object data)
     {
-        try
-        {
-            System.IO.File.AppendAllText(@"c:\qbit\logs\vpm.qbit", data + Environment.NewLine);
-        }
-        catch (Exception ex)
-        {
-            System.IO.File.AppendAllText(@"c:\qbit\logs\vpm.qbit", data + Environment.NewLine);
-        }
+       
     }
 
     public static string getmd5(string input)

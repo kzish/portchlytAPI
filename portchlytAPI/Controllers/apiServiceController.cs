@@ -8,6 +8,7 @@ using portchlytAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -59,32 +60,31 @@ namespace portchlytAPI.Controllers
                 acol.InsertOne(client);
 
                 //send bulk sms to user via the bulk sms api with the OTP
-                /* WebClient wc = new WebClient();
-                 wc.QueryString.Add("user_id", globals.cloudsms_user_id);
-                 wc.QueryString.Add("mobile", artisan.mobile);
-                 wc.QueryString.Add("msg", "Your porchlyt OTP is: " + OTP);
+                 WebClient wc = new WebClient();
+                 wc.QueryString.Add("mobile", client.mobile);
+                 wc.QueryString.Add("msg", "Your OTP is: " + OTP);
                  var data_ = wc.UploadValues(globals.cloudsms_api + "/sendSMS", "POST", wc.QueryString);
                  var responseString = UnicodeEncoding.UTF8.GetString(data_);
-                 */
+
                 return Json(new { res = "ok", msg = "registration complete", otp = OTP });
             }
-            else if (!exist.registered)//simply resend the otp and update the information
+            else if (exist != null)//simply resend the otp and update the information
             {
                 try
                 {
                     //send bulk sms to user via the bulk sms api with the OTP
-                    /* WebClient wc = new WebClient();
-                     wc.QueryString.Add("user_id", globals.cloudsms_user_id);
-                     wc.QueryString.Add("mobile", artisan.mobile);
-                     wc.QueryString.Add("msg", "Your porchlyt OTP is: " + OTP);
+                     WebClient wc = new WebClient();
+                     wc.QueryString.Add("mobile", exist.mobile);
+                     wc.QueryString.Add("msg", "Your OTP is: " + exist.otp);
                      var data_ = wc.UploadValues(globals.cloudsms_api + "/sendSMS", "POST", wc.QueryString);
                      var responseString = UnicodeEncoding.UTF8.GetString(data_);
-                     */
+                     
 
                     client._id = exist._id;//this will maintain the id
                     client.otp = exist.otp;//this maintains the otp also
+                    client.app_id = exist.app_id;//maintain the app id
                     acol.ReplaceOne(i => i.mobile == client.mobile, client);//replace it tus updating it incase any information is changed
-                    return Json(new { res = "ok", msg = "registration complete", otp = exist.otp });
+                    return Json(new { res = "ok", msg = "registration complete", otp = exist.otp, app_id=exist.app_id });
                 }
                 catch (Exception ex)
                 {
@@ -141,7 +141,7 @@ namespace portchlytAPI.Controllers
 
                 var point = new GeoJson2DGeographicCoordinates(lat, lon);
                 var pnt = new GeoJsonPoint<GeoJson2DGeographicCoordinates>(point);
-                var maxDistanceInKm = 100;//search this radius for the artisan in km
+                var maxDistanceInKm = 100000;//search this radius for the artisan in km
                 var filter = Builders<mArtisan>.Filter.Near(i => i.location.coordinates, pnt, maxDistanceInKm);
                 var acol = globals.getDB().GetCollection<mArtisan>("mArtisan");
                 var ccol = globals.getDB().GetCollection<mClient>("mClient");
@@ -195,7 +195,7 @@ namespace portchlytAPI.Controllers
         {
             var asr_col = globals.getDB().GetCollection<mArtisanServiceRequest>("mArtisanServiceRequest");
             var asr = asr_col.Find(i => i.client_request_id == request_id).FirstOrDefault();//fetch it each time to check if any changes, because this can be modified elsewhere by another service
-            if (asr==null||asr.requested_services.Count == 0)
+            if (asr == null || asr.requested_services.Count == 0)
             {
                 //no more services to service, it means all services have been assigned
                 //delete the request and break this loop
@@ -258,7 +258,8 @@ namespace portchlytAPI.Controllers
                 {
                     var update = Builders<mArtisanServiceRequest>.Update.Set(ii => ii.notify_client_in_the_future, true);
                     request_col.UpdateOne(i => i.client_request_id == request_id, update);//update and notify the client as soon as an artisan is available
-                }else if(action_to_take=="ignore")
+                }
+                else if (action_to_take == "ignore")
                 {
                     request_col.DeleteOne(i => i.client_request_id == request_id);//delete the request
                 }
@@ -276,21 +277,21 @@ namespace portchlytAPI.Controllers
         [Route("fetch_artisan_profile_picture")]
         public FileResult fetch_artisan_profile_picture(string artisan_app_id)
         {
-            var image = System.IO.File.OpenRead(host.WebRootPath+"/profile_pictures/"+artisan_app_id+".jpg");
+            var image = System.IO.File.OpenRead(host.WebRootPath + "/profile_pictures/" + artisan_app_id + ".jpg");
             return File(image, "image/jpeg");
         }
 
 
         //make payment and indicate the payment type
         [Route("make_payment_for_artisan")]
-        public string make_payment_for_artisan(string _job_id,double amount_payed,string client_app_id, string artisan_app_id,string payment_type)
+        public string make_payment_for_artisan(string _job_id, double amount_payed, string client_app_id, string artisan_app_id, string payment_type)
         {
             try
             {
                 //
                 var payment_col = globals.getDB().GetCollection<mPayment>("mPayment");
                 var exist = payment_col.Find(i => i._job_id == _job_id).FirstOrDefault();
-                if(exist==null)
+                if (exist == null)
                 {
 
                     //inserting
@@ -302,11 +303,11 @@ namespace portchlytAPI.Controllers
                     payment.client_app_id = client_app_id;
                     payment.artisan_app_id = artisan_app_id;
 
-                    if(payment_type=="cash")
+                    if (payment_type == "cash")
                     {
                         payment.paymentType = PaymentType.cash;
                     }
-                    else if(payment_type == "card")
+                    else if (payment_type == "card")
                     {
                         payment.paymentType = PaymentType.card;
                     }
@@ -319,7 +320,7 @@ namespace portchlytAPI.Controllers
                 else
                 {
                     //updating
-                    
+
                     if (payment_type == "cash")
                     {
                         var payment_update = Builders<mPayment>.Update
@@ -353,8 +354,8 @@ namespace portchlytAPI.Controllers
 
                 //send confirmation to the artisan
                 dynamic an = new JObject();
-                if(payment_type=="cash")an.type = "cash_payment_recieved";
-                if(payment_type=="card")an.type = "card_payment_recieved";
+                if (payment_type == "cash") an.type = "cash_payment_recieved";
+                if (payment_type == "card") an.type = "card_payment_recieved";
                 an._job_id = _job_id;
                 an.amount_payed = amount_payed;
                 globals.mqtt.Publish(artisan_app_id, Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(an)), 1, false);
@@ -365,7 +366,7 @@ namespace portchlytAPI.Controllers
                 r.msg = "payment recieved";
                 return JsonConvert.SerializeObject(r);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 dynamic r = new JObject();
                 r.res = "err";
@@ -376,7 +377,7 @@ namespace portchlytAPI.Controllers
 
 
         [Route("open_dispute")]
-        public string open_dispute(string _job_id,string reason_for_dispute,string artisan_app_id)
+        public string open_dispute(string _job_id, string reason_for_dispute, string artisan_app_id)
         {
             try
             {
@@ -417,7 +418,7 @@ namespace portchlytAPI.Controllers
                 json.msg = "dipute opened";
                 return JsonConvert.SerializeObject(json);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 dynamic json = new JObject();
                 json.res = "err";
@@ -429,14 +430,16 @@ namespace portchlytAPI.Controllers
 
         //add the rating for this artian
         [Route("add_artisan_rating")]
-        public string add_artisan_rating(string artisan_app_id,int rating)
+        public string add_artisan_rating(string artisan_app_id, int rating)
         {
             try
             {
 
 
                 var artisan_col = globals.getDB().GetCollection<mArtisan>("mArtisan");
-                var artisan_update = Builders<mArtisan>.Update.AddToSet(i=>i.artisanRating,rating);
+                var artisan_rating = new artisanRating();
+                artisan_rating.numStars = rating;
+                var artisan_update = Builders<mArtisan>.Update.AddToSet(i => i.artisanRating, artisan_rating);
                 artisan_col.UpdateOne(i => i.app_id == artisan_app_id, artisan_update);
 
 
@@ -444,7 +447,7 @@ namespace portchlytAPI.Controllers
                 dynamic n = new JObject();
                 n.type = "rating_notification";
                 n.rating = rating;
-                globals.mqtt.Publish(artisan_app_id,Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(n)),1,false);
+                globals.mqtt.Publish(artisan_app_id, Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(n)), 1, false);
 
 
                 //send reponse to the client
@@ -453,7 +456,7 @@ namespace portchlytAPI.Controllers
                 json.msg = "rating saved";
                 return JsonConvert.SerializeObject(json);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 dynamic json = new JObject();
                 json.res = "err";
@@ -461,6 +464,120 @@ namespace portchlytAPI.Controllers
                 return JsonConvert.SerializeObject(json);
             }
         }
+
+
+        //fetch the list of artisans on client listof artisans fragment
+        [Route("fetch_the_artisans")]
+        public string fetch_the_artisans(int page, string city, string skill)
+        {
+
+            //supported locations and their geocoordintes
+            Dictionary<string, List<double>> supported_locations = new Dictionary<string, List<double>>();
+            //supported_locations.Add("Abuja FCT", new List<double>(){ 9.0016626, 7.4219573 } );
+            supported_locations.Add("Abuja FCT", new List<double>(){ 9.072264, 7.491302} );
+            supported_locations.Add("Port Harcourt", new List<double>(){ 4.824167, 7.033611 } );
+            supported_locations.Add("Kano", new List<double>(){ 12.000000, 8.516667 } );
+            supported_locations.Add("Lagos", new List<double>(){ 6.465422, 3.406448 } );
+
+            //
+            var selected_city = supported_locations[city];
+            //lat lng
+            var point = new GeoJson2DGeographicCoordinates(selected_city[0],selected_city[1]);
+            var pnt = new GeoJsonPoint<GeoJson2DGeographicCoordinates>(point);
+            var maxDistanceInKm = 100000;//search this radius for the artisan in km
+            var filter = Builders<mArtisan>.Filter.Near(i => i.location.coordinates, pnt, maxDistanceInKm);
+
+            //
+            var artisan_col = globals.getDB().GetCollection<mArtisan>("mArtisan");
+
+
+            //
+            //will return in ranked order of closeness
+            var artisans_within_100_km_of_the_city = artisan_col.Find(filter).ToList();
+
+            //collect all artisans who has one or more of the skills and are available and are within 100km range in order of closeness
+            var list_of_artisans_with_any_of_these_services_who_are_in_the_city = artisans_within_100_km_of_the_city
+                .Where(i => i.skills.Contains(skill)).ToList();
+
+
+            int page_size = 1;
+            int skip = (page - 1) * page_size;
+
+            //var artisans = artisan_col.Find(i => i.skills.Contains(skill)).ToList().Skip(skip).Take(25);
+            var artisans = list_of_artisans_with_any_of_these_services_who_are_in_the_city.Skip(skip).Take(page_size);
+
+            //serialize
+            JArray ja = new JArray();
+            foreach (var a in artisans)
+            {
+                dynamic artisan = new JObject();
+                artisan.artisan_app_id = a.app_id;
+                artisan.name = a.name;
+                artisan.num_of_jobs = a.numJobs;
+                artisan.skills = String.Join(" ", a.skills);
+                artisan.hourly_rate = a.hourlyRate;
+                artisan.mobile = a.mobile;
+                artisan.rating = a.getRating();
+
+                ja.Add(JsonConvert.SerializeObject(artisan));
+            }
+
+
+            //return to client
+            return JsonConvert.SerializeObject(ja);
+
+        }
+
+      
+
+        [Route("client_cancel_job")]
+        public string client_cancel_job(string _job_id,string reason,string artisan_app_id, string client_app_id)
+        {
+            try
+            {
+
+                //update job status
+                var job_col = globals.getDB().GetCollection<mJobs>("mJobs");
+                var job_update = Builders<mJobs>.Update.Set(i => i.who_cancelled, Who_cancelled.client);
+                job_col.UpdateOne(i => i._job_id == _job_id, job_update);//update the job
+
+                //set artisan.busy = false
+                var artisan_col = globals.getDB().GetCollection<mArtisan>("mArtisan");
+                var artisan_update = Builders<mArtisan>.Update.Set(i => i.busy, false);
+                artisan_col.UpdateOne(i => i.app_id == artisan_app_id, artisan_update);
+
+                //now notify the artisan the job was cancelled
+                dynamic artisan_notification = new JObject();
+                artisan_notification.type = "job_cancelled";
+                artisan_notification._job_id = _job_id;
+                artisan_notification.reason_for_cancellation = reason;
+
+                globals.mqtt.Publish(artisan_app_id, Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(artisan_notification)), 1, false);
+
+
+
+
+                //send reponse to the client
+                dynamic json = new JObject();
+                json.res = "ok";
+                json.msg = "job canceled";
+                return JsonConvert.SerializeObject(json);
+
+            }
+            catch(Exception ex)
+            {
+
+                //send reponse to the client
+                dynamic json = new JObject();
+                json.res = "err";
+                json.msg = ex.Message;
+                return JsonConvert.SerializeObject(json);
+            }
+        }
+
+
+
+
 
 
     }//controller

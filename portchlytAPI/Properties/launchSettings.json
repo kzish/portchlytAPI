@@ -1,13 +1,13 @@
 {
   "iisSettings": {
-    "windowsAuthentication": false,
+    "windowsAuthentication": true,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "http://192.168.138.1/porchlytAPI",
+      "applicationUrl": "http://localhost:4444",
       "sslPort": 0
     },
     "iisExpress": {
-      "applicationUrl": "http://192.168.138.1:44312",
+      "applicationUrl": "http://192.168.138.1:44313",
       "sslPort": 0
     }
   },
@@ -20,7 +20,7 @@
       }
     },
     "portchlytAPI": {
-      "commandName": "IIS",
+      "commandName": "IISExpress",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

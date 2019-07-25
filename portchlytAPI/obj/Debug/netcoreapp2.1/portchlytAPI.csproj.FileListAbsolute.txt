@@ -23,17 +23,34 @@ C:\Users\samaritan\source\repos\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.
 C:\Users\samaritan\source\repos\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\Razor\Views\_ViewStart.g.cshtml.cs
 C:\Users\samaritan\source\repos\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.RazorTargetAssemblyInfo.cache
 C:\Users\samaritan\source\repos\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.RazorTargetAssemblyInfo.cs
-C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\bin\Debug\netcoreapp2.1\portchlytAPI.deps.json
-C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\bin\Debug\netcoreapp2.1\portchlytAPI.runtimeconfig.json
-C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\bin\Debug\netcoreapp2.1\portchlytAPI.runtimeconfig.dev.json
-C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\bin\Debug\netcoreapp2.1\portchlytAPI.dll
-C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\bin\Debug\netcoreapp2.1\portchlytAPI.pdb
 C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.csproj.CoreCompileInputs.cache
 C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.RazorAssemblyInfo.cache
 C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.RazorAssemblyInfo.cs
 C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.AssemblyInfoInputs.cache
 C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.AssemblyInfo.cs
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.TagHelpers.input.cache
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.TagHelpers.output.cache
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.RazorCoreGenerate.cache
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\Razor\Views\Admin\artisans.g.cshtml.cs
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\Razor\Views\Admin\clients.g.cshtml.cs
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\Razor\Views\Admin\completed_jobs.g.cshtml.cs
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\Razor\Views\Admin\dash_board.g.cshtml.cs
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\Razor\Views\Admin\disputes.g.cshtml.cs
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\Razor\Views\Admin\job_requests.g.cshtml.cs
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\Razor\Views\Admin\_Layout.g.cshtml.cs
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\Razor\Views\Auth\Login.g.cshtml.cs
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\Razor\Views\Auth\_Layout.g.cshtml.cs
 C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.RazorTargetAssemblyInfo.cache
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.RazorTargetAssemblyInfo.cs
 C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.dll
 C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.pdb
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\bin\Debug\netcoreapp2.1\portchlytAPI.deps.json
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\bin\Debug\netcoreapp2.1\portchlytAPI.runtimeconfig.json
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\bin\Debug\netcoreapp2.1\portchlytAPI.runtimeconfig.dev.json
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\bin\Debug\netcoreapp2.1\portchlytAPI.dll
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\bin\Debug\netcoreapp2.1\portchlytAPI.pdb
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\bin\Debug\netcoreapp2.1\portchlytAPI.Views.dll
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\bin\Debug\netcoreapp2.1\portchlytAPI.Views.pdb
 C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.csprojAssemblyReference.cache
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.Views.pdb
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\portchlytAPI\portchlytAPI\obj\Debug\netcoreapp2.1\portchlytAPI.csproj.CopyComplete

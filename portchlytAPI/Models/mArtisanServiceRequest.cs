@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+using MongoDB.Driver;
 namespace portchlytAPI.Models
 {
     //this class model represents a service request from a client
@@ -17,5 +15,17 @@ namespace portchlytAPI.Models
         public double lon { get; set; }//the longitude will be used to show the location on the map
         public DateTime time_of_request { get; set; } = DateTime.Now;//the time we first notified this artisan
         public bool notify_client_in_the_future { get; set; }//notify the client in the future if this artian is now available
+
+
+      
+       
+
     }
+
 }
+
+
+
+
+
+

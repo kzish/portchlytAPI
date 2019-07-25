@@ -1,0 +1,56 @@
+﻿@{ Layout = "_Layout";}
+
+@{var clients = (IPagedList<portchlytAPI.Models.mClient>)ViewBag.clients;}
+@using PagedList.Core;
+@using PagedList;
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, PagedList.Core.Mvc
+
+<style>
+    .img_profile {
+        border-radius: 100px;
+    }
+</style>
+
+
+<h1>Clients</h1>
+
+
+<table class="table table-hover td_ellipsize">
+    <thead>
+        <tr>
+            <th scope="col">Mobile</th>
+            <th scope="col">Disputes</th>
+            <th scope="col">Completed Jobs</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var client in clients)
+        {
+            <tr>
+                <td title="@client.mobile">@client.mobile</td>
+                <td title="0">0</td>
+                <td title="0">0</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@*pager indicator*@
+<pager class="pager-container"
+       list="@clients"
+       options="@PagedList.Core.Mvc.PagedListRenderOptions.PageNumbersOnly"
+       asp-action="artisans"
+       asp-controller="Admin"
+       asp-route-keyword="" />
+
+
+
+
+
+
+
+
+

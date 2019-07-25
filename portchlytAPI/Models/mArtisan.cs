@@ -30,7 +30,7 @@ namespace portchlytAPI.Models
         public string otp { get; set; }
         public List<string> skills { get; set; } = new List<string>();
         public List<Referee> referees { get; set; } = new List<Referee>();
-        public List<int> artisanRating { get; set; }
+        public List<artisanRating> artisanRating { get; set; } = new List<artisanRating>();
         public int numJobs { get; set; }//the number of jobs that i have done
         public int myrating { get; set; }
         public bool registered { get; set; }
@@ -39,15 +39,16 @@ namespace portchlytAPI.Models
         public bool synced { get; set; }
         public Location location { get; set; } = new Location(9.0,7.0);//this is the current location of the artisan and is constantly updated
         public String app_id;//the app id of this artisan
+        public double earnings_since_last_disbursement;//this is what this person has earned since his/her last dispursment
         public int getRating()//get my rating
         {
             try
             {
-                var fiveRatings = artisanRating.Where(x => x == 5).Count();
-                var fourRatings = artisanRating.Where(x => x == 4).Count();
-                var threeRatings = artisanRating.Where(x => x == 3).Count();
-                var twoRatings = artisanRating.Where(x => x == 2).Count();
-                var oneRatings = artisanRating.Where(x => x == 1).Count();
+                var fiveRatings = artisanRating.Where(x => x.numStars == 5).Count();
+                var fourRatings = artisanRating.Where(x => x.numStars == 4).Count();
+                var threeRatings = artisanRating.Where(x => x.numStars == 3).Count();
+                var twoRatings = artisanRating.Where(x => x.numStars == 2).Count();
+                var oneRatings = artisanRating.Where(x => x.numStars == 1).Count();
 
                 var rating = (
                                5 * fiveRatings +
@@ -101,10 +102,7 @@ namespace portchlytAPI.Models
     public class artisanRating
     {
         public string _id { get; set; } = Guid.NewGuid().ToString();
-        public string clientID { get; set; }//the client who did the rating
         public int numStars { get; set; }//the number of stars given;
-        public DateTime date { get; set; } = DateTime.Now;//date this was done
-        public string assignmentID { get; set; }//the id of the assingment this rating was given
     }
 
     public class Location {

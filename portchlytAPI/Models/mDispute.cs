@@ -10,6 +10,8 @@ namespace portchlytAPI.Models
         public string _id { get; set; } = Guid.NewGuid().ToString();
         public DateTime date { get; set; } = DateTime.Now;
         public string _job_id { get; set; }
+        public string artisan_app_id { get; set; }
+        public string client_app_id { get; set; }
         public string reason_for_dispute { get; set; }
         public DisputeStatus dispute_status { get; set; } = DisputeStatus.open;
     }

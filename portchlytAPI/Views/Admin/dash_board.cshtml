@@ -1,0 +1,87 @@
+﻿@{ Layout = "_Layout";}
+
+<div class="row">
+
+
+
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Artisans</div>
+            <div class="card-body">
+                <h4 class="card-title">@ViewBag.num_artisans</h4>
+            </div>
+            <div class="card-footer">
+                <a href="/Admin/artisans" style="color:#fff;">view</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">Clients</div>
+            <div class="card-body">
+                <h4 class="card-title">@ViewBag.num_clients</h4>
+            </div>
+            <div class="card-footer">
+                <a href="/Admin/clients" style="color:#fff;">view</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">Jobs</div>
+            <div class="card-body">
+                <h4 class="card-title">@ViewBag.num_jobs</h4>
+            </div>
+            <div class="card-footer">
+                <a href="/Admin/jobs" style="color:#fff;">view</a>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+<div class="row">
+
+
+
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Job Requests</div>
+            <div class="card-body">
+                <h4 class="card-title">@ViewBag.num_job_requests</h4>
+            </div>
+            <div class="card-footer">
+                <a href="/Admin/job_requests" style="color:#fff;">view</a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col-md-4">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-header">Disputes</div>
+            <div class="card-body">
+                <h4 class="card-title">@ViewBag.num_disputes</h4>
+            </div>
+            <div class="card-footer">
+                <a href="/Admin/disputes" style="color:#fff;">view</a>
+            </div>
+        </div>
+    </div>
+
+   
+
+
+</div>
+
+
+

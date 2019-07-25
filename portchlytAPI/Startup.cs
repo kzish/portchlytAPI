@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using portchlytAPI.Controllers;
 using portchlytAPI.Models;
+using Services;
 using System;
 using System.Net;
 using System.Text;
@@ -50,6 +51,10 @@ namespace portchlytAPI
             var model = new CreateIndexModel<mArtisan>(keys, indexOptions);
             globals.getDB().GetCollection<mArtisan>("mArtisan").Indexes.CreateOne(model);
 
+            //run general updates
+            var service_artisan_on_map_update = new artisan_on_map_update();
+
+           
 
         }
 
@@ -99,6 +104,9 @@ namespace portchlytAPI
             services.AddSession();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>(); // <= Add this for pagination
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            //run general updates
+            //services.AddSingleton<ITimer, artisan_on_map_update>();//add the timer service scheduler as a singleton
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
