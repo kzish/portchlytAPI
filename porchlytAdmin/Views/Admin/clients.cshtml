@@ -1,0 +1,60 @@
+﻿@{ Layout = "_Layout";}
+
+@{var clients = (IPagedList<portchlytAPI.Models.mClient>)ViewBag.clients;}
+@using PagedList.Core;
+@using PagedList;
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, PagedList.Core.Mvc
+
+<style>
+    .img_profile {
+        border-radius: 100px;
+    }
+</style>
+
+
+<h1>Clients</h1>
+
+
+<table class="table table-hover td_ellipsize">
+    <thead>
+        <tr>
+            <th scope="col">Mobile</th>
+            <th scope="col">Completed Jobs</th>
+            <th scope="col">Cancellations</th>
+            <th scope="col">Disputes</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var client in clients)
+        {
+        <tr class="@(client.enabled?"":"table-danger")">
+            <td title="@client.mobile">@client.mobile</td>
+            <td title="0">@client.get_number_of_completed_jobs()</td>
+            <td title="0">@client.get_number_of_cancellations()</td>
+            <td title="0">@client.get_number_of_disputes()</td>
+            <td><a href="/Admin/view_client?client_app_id=@client.app_id">Open</a></td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+
+@*pager indicator*@
+<pager class="pager-container"
+       list="@clients"
+       options="@PagedList.Core.Mvc.PagedListRenderOptions.PageNumbersOnly"
+       asp-action="artisans"
+       asp-controller="Admin"
+       asp-route-keyword="" />
+
+
+
+
+
+
+
+
+

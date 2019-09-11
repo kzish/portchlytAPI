@@ -1,0 +1,83 @@
+﻿@{ Layout = "_Layout";}
+
+@{var jobs = (IPagedList<portchlytAPI.Models.mJobs>)ViewBag.jobs;}
+@using PagedList.Core;
+@using PagedList;
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, PagedList.Core.Mvc
+
+
+<script>
+
+    function get_address(label, lat, lng) {
+        $.ajax({
+            url: "/apiAdmin/get_address_from_geolocation?latitude=" + lat + "&longitude=" + lng,
+            success: function (address) {
+                $("#"+label).text(address);
+                $("#td_"+label).attr("title",address);
+            }
+        })
+    }
+</script>
+
+
+<h1>Jobs</h1>
+
+
+<table class="table table-hover td_ellipsize">
+    <thead>
+        <tr>
+            <th scope="col">Status</th>
+            <th scope="col">Client</th>
+            <th scope="col">Artisan</th>
+
+            <th scope="col">Start Time</th>
+            <th scope="col">End Time</th>
+
+            <th scope="col">Address</th>
+            <th scope="col">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var job in jobs)
+        {
+        <tr>
+
+            <td title="@job.job_status"> @job.job_status</td>
+            <td title="@job.client_mobile"> @job.client_mobile</td>
+            <td title="@job.get_artisan().mobile"><a href="/Admin/view_artisan?artisan_app_id=@job.get_artisan().app_id">@job.get_artisan().mobile </a> </td>
+            <td title="@job.start_time">@job.start_time</td>
+            <td title="@job.end_time">@job.end_time</td>
+
+            <td id="td_@job._id">
+                <label id="@job._id">...</label>
+                <script>
+                        get_address("@job._id",@job.geoLocationLatitude,@job.geoLocationLongitude);
+                </script>
+            </td>
+
+            <td title="@job.description">@job.description</td>
+        </tr>
+        }
+
+    </tbody>
+</table>
+
+
+@*pager indicator*@
+<pager class="pager-container"
+       list="@jobs"
+       options="@PagedList.Core.Mvc.PagedListRenderOptions.PageNumbersOnly"
+       asp-action="jobs"
+       asp-controller="Admin"
+       asp-route-keyword="" />
+
+
+
+
+
+
+
+
+

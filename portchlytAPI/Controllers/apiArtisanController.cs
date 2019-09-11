@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 
 /// <summary>
 /// this controller is for the porchlyt artisan app
@@ -20,7 +21,11 @@ namespace portchlytAPI.Controllers
     [Route("apiArtisan")]
     public class apiArtisanController : Controller
     {
-
+        [Route("")]
+        public string alive()
+        {
+            return "alive";
+        }
 
 
         HostingEnvironment host;
@@ -29,6 +34,114 @@ namespace portchlytAPI.Controllers
             host = e;
         }
 
+        //todo: remove return true and open this method
+        [Route("na")]
+        public bool create_artisan_sub_bank_account(mArtisan artisan, string account_bank, string account_number)
+        {
+            //return true;
+            ///convert account_bank to a number
+            string json_banks_string = System.IO.File.ReadAllText(host.WebRootPath + "/data/list_of_banks_in_nigeria.json");
+            dynamic json_banks_json = JsonConvert.DeserializeObject(json_banks_string);
+            List<mBank> list_of_banks_in_nigeria = json_banks_json.Banks.ToObject(typeof(List<mBank>));
+            mBank selected_bank = list_of_banks_in_nigeria.Where(i => i.Name == account_bank).FirstOrDefault();
+
+            //create the sub account for the artisan
+            WebClient wc = new WebClient();
+            wc.Headers[HttpRequestHeader.ContentType] = "application/json";
+
+            //create json object to post
+            dynamic json_post = new JObject();
+            json_post.account_bank = selected_bank.Code;
+            json_post.account_number = account_number;
+            json_post.business_name = artisan.app_id;
+            json_post.business_mobile = artisan.mobile;
+            json_post.seckey = globals.rave_flutter_wave_secret_key;
+            json_post.split_type = globals.rave_flutter_wave_split_type;
+            json_post.split_value = globals.rave_flutter_wave_split_value;
+            json_post.country = globals.rave_flutter_wave_country;
+            string json_data = json_post.ToString();
+
+            //live or sandbox
+            //var data_ = wc.UploadString("https://api.ravepay.co/v2/gpx/subaccounts/create", json_data);
+            var data_ = wc.UploadString("https://ravesandboxapi.flutterwave.com/v2/gpx/subaccounts/create?", json_data);
+            dynamic json_response = JsonConvert.DeserializeObject(data_);
+            string status = json_response.status;
+            if (status == "success")
+            {
+                //proceed, sub account created successfully
+                //update artisan sub account id
+                string subaccunt_id = json_response.data.subaccount_id;
+                string subaccunt_id_id = json_response.data.id;
+                var artisan_col = globals.getDB().GetCollection<mArtisan>("mArtisan");
+                var artisan_update = Builders<mArtisan>.Update
+                    .Set(i => i.subaccount_id, subaccunt_id)
+                    .Set(i => i.subaccount_id_id, subaccunt_id_id);
+                artisan_col.UpdateOne(i => i.app_id == artisan.app_id, artisan_update);
+                return true;
+            }
+            else// if (status == "error")
+            {
+                //return to artisan with error message
+                dynamic res_ = new JObject();
+                res_.res = "err";
+                res_.msg = json_response.message;
+                return false;
+            }
+        }
+        [Route("na")]
+        public bool update_artisan_sub_bank_account(mArtisan artisan, string account_bank, string account_number)
+        {
+            //return true;
+            ///convert account_bank to a number
+            string json_banks_string = System.IO.File.ReadAllText(host.WebRootPath + "/data/list_of_banks_in_nigeria.json");
+            dynamic json_banks_json = JsonConvert.DeserializeObject(json_banks_string);
+            List<mBank> list_of_banks_in_nigeria = json_banks_json.Banks.ToObject(typeof(List<mBank>));
+            mBank selected_bank = list_of_banks_in_nigeria.Where(i => i.Name == account_bank).FirstOrDefault();
+
+            //create the sub account for the artisan
+            WebClient wc = new WebClient();
+            wc.Headers[HttpRequestHeader.ContentType] = "application/json";
+
+            //create json object to post
+            dynamic json_post = new JObject();
+            json_post.account_bank = selected_bank.Code;
+            json_post.account_number = account_number;
+            json_post.business_name = artisan.app_id;
+            json_post.business_mobile = artisan.mobile;
+            json_post.seckey = globals.rave_flutter_wave_secret_key;
+            json_post.split_type = globals.rave_flutter_wave_split_type;
+            json_post.split_value = globals.rave_flutter_wave_split_value;
+            json_post.country = globals.rave_flutter_wave_country;
+            json_post.id = artisan.subaccount_id_id;
+            string json_data = json_post.ToString();
+
+            //live or sandbox
+            //var data_ = wc.UploadString("https://api.ravepay.co/v2/gpx/subaccounts/edit", json_data);
+            var data_ = wc.UploadString("https://ravesandboxapi.flutterwave.com/v2/gpx/subaccounts/edit?", json_data);
+            dynamic json_response = JsonConvert.DeserializeObject(data_);
+            string status = json_response.status;
+            if (status == "success")
+            {
+                //proceed, sub account created successfully
+                //update artisan sub account id
+                string subaccunt_id = json_response.data.subaccount_id;
+                string subaccunt_id_id = json_response.data.id;
+                var artisan_col = globals.getDB().GetCollection<mArtisan>("mArtisan");
+                var artisan_update = Builders<mArtisan>.Update
+                    .Set(i => i.subaccount_id, subaccunt_id)
+                    .Set(i => i.subaccount_id_id, subaccunt_id_id);
+                artisan_col.UpdateOne(i => i.app_id == artisan.app_id, artisan_update);
+                return true;
+            }
+            else// if (status == "error")
+            {
+                //return to artisan with error message
+                dynamic res_ = new JObject();
+                res_.res = "err";
+                res_.msg = json_response.message;
+                return false;
+            }
+        }
 
 
         /// <summary>
@@ -36,7 +149,7 @@ namespace portchlytAPI.Controllers
         /// </summary>
         /// <param name="artisan"></param>
         /// <returns></returns>
-        [HttpPost("artisanRegistration")]
+        [Route("artisanRegistration")]
         public JsonResult artisanRegistration(string data)
         {
             mArtisan artisan = JsonConvert.DeserializeObject<mArtisan>(data);//convert data to object
@@ -45,6 +158,7 @@ namespace portchlytAPI.Controllers
             var exist = acol.Find(x => x.mobile == artisan.mobile).FirstOrDefault();
             if (exist == null)//insert this one
             {
+
                 //generate random 5 digit otp number
                 Random r = new Random();
                 var x = r.Next(0, 100000);
@@ -54,12 +168,12 @@ namespace portchlytAPI.Controllers
                 acol.InsertOne(artisan);
 
                 //send bulk sms to user via the bulk sms api with the OTP
-                WebClient wc = new WebClient();
+                /*WebClient wc = new WebClient();
                 wc.QueryString.Add("mobile", artisan.mobile);
                 wc.QueryString.Add("msg", "Your OTP is: " + OTP);
                 var data_ = wc.UploadValues(globals.cloudsms_api + "/sendSMS", "POST", wc.QueryString);
                 var responseString = UnicodeEncoding.UTF8.GetString(data_);
-
+                */
 
                 return Json(new { res = "ok", msg = "registration complete", otp = OTP });
             }
@@ -67,13 +181,14 @@ namespace portchlytAPI.Controllers
             {
                 try
                 {
-                    //send bulk sms to user via the bulk sms api with the OTP
-                    WebClient wc = new WebClient();
-                    wc.QueryString.Add("mobile", artisan.mobile);
-                    wc.QueryString.Add("msg", "Your OTP is: " + exist.otp);
-                    var data_ = wc.UploadValues(globals.cloudsms_api + "/sendSMS", "POST", wc.QueryString);
-                    var responseString = UnicodeEncoding.UTF8.GetString(data_);
 
+                    //send bulk sms to user via the bulk sms api with the OTP
+                    /* WebClient wc = new WebClient();
+                     wc.QueryString.Add("mobile", artisan.mobile);
+                     wc.QueryString.Add("msg", "Your OTP is: " + exist.otp);
+                     var data_ = wc.UploadValues(globals.cloudsms_api + "/sendSMS", "POST", wc.QueryString);
+                     var responseString = UnicodeEncoding.UTF8.GetString(data_);
+                     */
                     artisan._id = exist._id;//this will maintain the id
                     artisan.otp = exist.otp;//this maintains the otp also
                     acol.ReplaceOne(i => i.mobile == artisan.mobile, artisan);//replace it thus updating it incase any information is changed
@@ -96,16 +211,20 @@ namespace portchlytAPI.Controllers
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        [HttpPost("artisanConfirmRegistration")]
-        public JsonResult artisanConfirmRegistration(string data)
+        [Route("artisanConfirmRegistration")]
+        public JsonResult artisanConfirmRegistration(string mobile)
         {
             try
             {
-                mArtisan m = JsonConvert.DeserializeObject<mArtisan>(data);
                 var update = Builders<mArtisan>.Update.Set(x => x.registered, true);
                 var acol = globals.getDB().GetCollection<mArtisan>("mArtisan");
-                acol.UpdateOne(x => x.mobile == m.mobile, update);//update this artisans registration status
-                return Json(new { res = "ok", msg = "registration confirmed" });
+                acol.UpdateOne(x => x.mobile == mobile, update);//update this artisans registration status
+                //also check if this artisan is blocked and send this information to the artisan
+                var artisan_col = globals.getDB().GetCollection<mArtisan>("mArtisan");
+                var artisan = artisan_col.Find(x => x.mobile == mobile).FirstOrDefault();
+                string account_status = "active";
+                if (!artisan.enabled) account_status = "blocked";
+                return Json(new { res = "ok", msg = "registration confirmed", account_status = account_status });
             }
             catch (Exception ex)
             {
@@ -197,7 +316,6 @@ namespace portchlytAPI.Controllers
         }
 
 
-
         /// <summary>
         /// the artisan has accepted the request 
         /// </summary>
@@ -214,9 +332,14 @@ namespace portchlytAPI.Controllers
                 string _job_id = json._job_id;//get the job id
                 string artisan_app_id = json.artisan_app_id;
                 string client_app_id = json.client_app_id;
-                List<string> artisan_skills = ((string)json.artisan_skills).Split(":").ToList<string>();
+                List<string> artisan_skills_ = ((string)json.artisan_skills).Split(".").ToList<string>();
+                List<string> artisan_skills = new List<string>();
+                foreach (string skill in artisan_skills_)
+                {
+                    artisan_skills.Add(skill.Trim());
+                }
                 var asr_col = globals.getDB().GetCollection<mArtisanServiceRequest>("mArtisanServiceRequest");
-                //now update the service request by removing these skill since they have been selected already
+                //now update the service request by removing these skills since they have been selected already
                 var update = Builders<mArtisanServiceRequest>.Update
                     .PullAll(i => i.requested_services, artisan_skills
                     );
@@ -226,6 +349,29 @@ namespace portchlytAPI.Controllers
                 var the_chosen_artisan = artisan_col.Find(i => i.app_id == artisan_app_id).FirstOrDefault();
                 var client_col = globals.getDB().GetCollection<mClient>("mClient");
                 var the_client_who_requested_the_service = client_col.Find(i => i.app_id == client_app_id).FirstOrDefault();
+
+
+                //create and record a new job 
+                var jobs_col = globals.getDB().GetCollection<mJobs>("mJobs");
+                var new_job = new mJobs();
+                new_job._job_id = _job_id;
+                new_job.client_mobile = the_client_who_requested_the_service.mobile;
+                new_job.client_app_id = the_client_who_requested_the_service.app_id;
+                new_job.artisan_app_id = the_chosen_artisan.app_id;
+                new_job.start_time = DateTime.Now.ToString();
+                new_job.end_time = null;
+                new_job.country = "NG";
+                new_job.category = String.Join(":", artisan_skills);
+                new_job.city_or_state = null;
+                new_job.geoLocationLatitude = original_request.lat.ToString();
+                new_job.geoLocationLongitude = original_request.lon.ToString();
+                new_job.address = null;
+                new_job.price = 0.0;
+                new_job.description = String.Join(":", original_request.requested_services);
+                new_job.tasks = new List<mTask>();
+                new_job.job_status = JobStatus.opened;
+                jobs_col.InsertOne(new_job);
+
 
                 //send message to the client that we have found this artisan
                 //notify the client that an artisan has accepted the job
@@ -278,8 +424,6 @@ namespace portchlytAPI.Controllers
 
         }
 
-
-
         //function to forward the bill to the client and also save the bill for records keepin
         [Route("forward_bill_to_client")]
         public string forward_bill_to_client(string data)
@@ -287,19 +431,20 @@ namespace portchlytAPI.Controllers
             try
             {
                 dynamic json = JsonConvert.DeserializeObject(data);
-                string request_id = json.request_id;
-                string artisan_app_id = json.artisan_app_id;
+                //string request_id = json.request_id;
+                //string artisan_app_id = json.artisan_app_id;
                 string client_app_id = json.client_app_id;
 
                 //save this data to the data base for records sake
-                var jobs_col = globals.getDB().GetCollection<mJobs>("mJobs");
+                //var jobs_col = globals.getDB().GetCollection<mJobs>("mJobs");
 
                 dynamic client_notification = new JObject();
-                client_notification.data = data;
+                client_notification.data = Regex.Unescape(data);
                 client_notification.type = "client_job_bill_notification";
 
                 //forward all this data to the client as a notification
-                globals.mqtt.Publish(client_app_id, Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(client_notification)), 1, false);
+                //must be a zero so it does not get stored
+                //globals.mqtt.Publish(client_app_id, Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(client_notification)), 0, false);
 
 
                 //respond to the artisan request
@@ -318,8 +463,6 @@ namespace portchlytAPI.Controllers
             }
         }
 
-
-
         [Route("update_artisan_details")]
         public string update_artisan_details(string data)
         {
@@ -327,14 +470,40 @@ namespace portchlytAPI.Controllers
             {
                 dynamic json = JsonConvert.DeserializeObject(data);
                 var artisan_col = globals.getDB().GetCollection<mArtisan>("mArtisan");
+
                 string artisan_app_id = json.artisan_app_id;
                 string name = json.name;
                 string email = json.email;
+                string account_bank = json.account_bank;
+                string account_number = json.account_number;
                 double hourlyRate = json.hourlyRate;
+                string mobile = json.mobile;
+
+
+                var artisan = artisan_col.Find(i => i.app_id == artisan_app_id).FirstOrDefault();
+
+                if (String.IsNullOrEmpty(artisan.account_bank))
+                {
+                    //create banking details
+                    create_artisan_sub_bank_account(artisan, account_bank, account_number);
+                }
+                else
+                {
+                    //update banking details
+                    update_artisan_sub_bank_account(artisan, account_bank, account_number);
+                }
+
+
+
+
                 var artisan_update = Builders<mArtisan>.Update
                     .Set(i => i.name, name)
                     .Set(i => i.email, email)
-                    .Set(i => i.hourlyRate, hourlyRate);
+                    .Set(i => i.hourlyRate, hourlyRate)
+                    .Set(i => i.account_bank, account_bank)
+                    .Set(i => i.account_number, account_number)
+                    .Set(i => i.mobile, mobile)
+                    ;
 
                 artisan_col.UpdateOne(i => i.app_id == artisan_app_id, artisan_update);
 
@@ -385,9 +554,6 @@ namespace portchlytAPI.Controllers
             }
         }//.upload_image_from_mobile
 
-
-
-
         [Route("remove_profile_picture")]
         public string remove_profile_picture(string artisan_app_id)
         {
@@ -412,7 +578,6 @@ namespace portchlytAPI.Controllers
             }
         }
 
-
         //confirm cash payment recieved
         [Route("artisan_accept_cash_payment")]
         public string artisan_accept_cash_payment(string _job_id, string client_app_id, string artisan_app_id)
@@ -420,15 +585,56 @@ namespace portchlytAPI.Controllers
             try
             {
 
-                //
+                //update the payment to say that the artisan has accepted the payment
                 var payment_col = globals.getDB().GetCollection<mPayment>("mPayment");
                 var payment_update = Builders<mPayment>.Update.Set(i => i.artisan_accepted, true);
                 payment_col.UpdateOne(i => i._job_id == _job_id, payment_update);
 
-                //upadte artisan from busy to not busy
+
+                //update artisan status
                 var artisan_col = globals.getDB().GetCollection<mArtisan>("mArtisan");
-                var artisan_update = Builders<mArtisan>.Update.Set(i => i.busy, false);
+                var artisan_update = Builders<mArtisan>
+                    .Update
+                    .Set(i => i.busy, false)//update artisan from busy to not busy
+                    .Inc(i => i.numJobs, 1);//increment also the number of jobs
                 artisan_col.UpdateOne(i => i.app_id == artisan_app_id, artisan_update);
+
+                //check the amount of cash on hand for the client
+                var payments_col = globals.getDB().GetCollection<mPayment>("mPayment");
+                //get the cash amount that is not remitted
+                var payments_cash_total = payments_col.Find(i => i.artisan_app_id == artisan_app_id && i.paymentType == PaymentType.cash).ToList().Sum(i => i.amount_payed);
+
+                if (payments_cash_total >= 5000)
+                {
+                    //update the artisan to be busy so he will not get anymore jobs untill he remits the cash on hand
+                    //diable the artisan account
+                    artisan_update = Builders<mArtisan>
+                    .Update
+                    .Set(i => i.busy, true)//update artisan from not busy to busy
+                    .Set(i => i.enabled, false)//set enabled
+                    .Set(i => i.reason_for_enable, "N5000 > cash limit reached");//set reason
+                    artisan_col.UpdateOne(i => i.app_id == artisan_app_id, artisan_update);
+
+                    //also send him a message to inform him of this
+                    dynamic notification = new JObject();
+                    notification.type = "general_notification";
+                    //notification.general_notification_message = "You have accumulated "+globals.getLocalCurrencyNG(5000)+" and must remit this money to the company, you will not be able to get any jobs until you have remitted the money";
+                    notification.general_notification_message = "You have accumulated N5000 and must remit this money to the company, you will not be able to get any jobs until you have remitted the money";
+                    globals.mqtt.Publish(artisan_app_id, Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(notification)), 1, false);
+
+                    dynamic status = new JObject();
+                    status.type = "account_status";
+                    status.msg = "remit_cash";
+                    globals.mqtt.Publish(artisan_app_id, Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(status)), 1, false);
+                }
+
+                //update the job
+                var job_col = globals.getDB().GetCollection<mJobs>("mJobs");
+                var job_col_update = Builders<mJobs>
+                    .Update
+                    .Set(i => i.end_time, DateTime.Now.ToString())
+                    .Set(i => i.job_status, JobStatus.closed);
+                job_col.UpdateOne(i => i._job_id == _job_id, job_col_update);
 
 
                 //send acknowledgement to the client
@@ -437,7 +643,7 @@ namespace portchlytAPI.Controllers
                 an._job_id = _job_id;
                 globals.mqtt.Publish(client_app_id, Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(an)), 1, false);
 
-                //
+                //response
                 dynamic res = new JObject();
                 res.res = "ok";
                 res.msg = "payment confirmed";
@@ -455,15 +661,25 @@ namespace portchlytAPI.Controllers
 
 
         [Route("fetch_extra_jobs")]
-        public String fetch_extra_jobs(string artisan_skills)
+        public String fetch_extra_jobs(string artisan_skills, int page, int per_page)
         {
             try
             {
 
-                List<string> skills = artisan_skills.Split(':').ToList();
+                List<string> skills_ = artisan_skills.Split('.').ToList();
+                List<string> skills = new List<string>();
+                foreach (string s in skills_)
+                {
+                    skills.Add(s.Trim());
+                }
                 ///get the srvices which are requered to inform in the future
                 var service_request_col = globals.getDB().GetCollection<mArtisanServiceRequest>("mArtisanServiceRequest").Find(i => i.notify_client_in_the_future).ToList();
-                var jobs = service_request_col.Where(i => i.requested_services.Intersect(skills).Any()).ToList();
+                var jobs = service_request_col
+                    .Where(i => i.requested_services.Intersect(skills).Any() && i.notify_client_in_the_future)
+                    .ToList()
+                    .Skip(page * per_page)
+                    .Take(per_page)
+                    ;
                 return JsonConvert.SerializeObject(jobs);
 
             }
@@ -472,8 +688,6 @@ namespace portchlytAPI.Controllers
                 return "err";
             }
         }
-
-
 
 
         ///artian login instead of sigining up since this artisan already has loged in
@@ -501,12 +715,12 @@ namespace portchlytAPI.Controllers
 
                 //use the sms api ot send the otp
                 //send bulk sms to user via the bulk sms api with the OTP
-                 WebClient wc = new WebClient();
-                 wc.QueryString.Add("mobile", artisan.mobile);
-                 wc.QueryString.Add("msg", "Your OTP is: " + artisan.otp);
-                 var data_ = wc.UploadValues(globals.cloudsms_api + "/sendSMS", "POST", wc.QueryString);
-                 var responseString = UnicodeEncoding.UTF8.GetString(data_);
-                 
+                /*WebClient wc = new WebClient();
+                wc.QueryString.Add("mobile", artisan.mobile);
+                wc.QueryString.Add("msg", "Your OTP is: " + artisan.otp);
+                var data_ = wc.UploadValues(globals.cloudsms_api + "/sendSMS", "POST", wc.QueryString);
+                var responseString = UnicodeEncoding.UTF8.GetString(data_);
+                */
 
                 {
                     dynamic r = new JObject();
@@ -535,7 +749,11 @@ namespace portchlytAPI.Controllers
 
                 //update job status
                 var job_col = globals.getDB().GetCollection<mJobs>("mJobs");
-                var job_update = Builders<mJobs>.Update.Set(i => i.who_cancelled, Who_cancelled.artisan);
+                var job_update = Builders<mJobs>
+                    .Update
+                    .Set(i => i.who_cancelled, Who_cancelled.artisan)//set who cancelled
+                    .Set(i => i.job_status, JobStatus.cancelled)//set status
+                    ;
                 job_col.UpdateOne(i => i._job_id == _job_id, job_update);//update the job
 
 
@@ -543,7 +761,6 @@ namespace portchlytAPI.Controllers
                 var artisan_col = globals.getDB().GetCollection<mArtisan>("mArtisan");
                 var artisan_update = Builders<mArtisan>.Update.Set(i => i.busy, false);
                 artisan_col.UpdateOne(i => i.app_id == artisan_app_id, artisan_update);
-
 
 
                 //now notify the client the job was cancelled
@@ -575,6 +792,59 @@ namespace portchlytAPI.Controllers
             }
         }
 
+        //static method to fetch earnings
+        public static string fetch_earnings_data_(string artisan_app_id)
+        {
+            var payments_col = globals.getDB().GetCollection<mPayment>("mPayment");
+            var my_payments = payments_col.Find(i => i.artisan_app_id == artisan_app_id).ToList();
+
+
+            var jobs_col = globals.getDB().GetCollection<mJobs>("mJobs");
+            var my_jobs = jobs_col.Find(i => i.artisan_app_id == artisan_app_id).ToList();
+
+
+            //total_earnings
+            double total_earnings = my_payments.Sum(i => i.amount_payed);
+            //remove 15% for company
+            total_earnings = total_earnings - ((globals.company_artisan_split_value / 100) * total_earnings);
+
+
+            //total_earnings_this_month
+            double total_earnings_this_month = my_payments.Where(i => i.date.Month == DateTime.Now.Month && i.date.Year == DateTime.Now.Year).Sum(i => i.amount_payed);
+            //remove 15% for company
+            total_earnings_this_month = total_earnings_this_month - ((globals.company_artisan_split_value / 100) * total_earnings_this_month);
+
+
+            //total_jobs
+            long total_jobs = my_jobs.Count();
+
+            //total_jobs_this_month
+            long total_jobs_this_month = my_jobs.Where(i => i.date.Month == DateTime.Now.Month && i.date.Year == DateTime.Now.Year).Count();
+
+
+
+            dynamic res = new JObject();
+            res.total_earnings = total_earnings;
+            res.total_earnings_this_month = total_earnings_this_month;
+            res.total_jobs = total_jobs;
+            res.total_jobs_this_month = total_jobs_this_month;
+            return JsonConvert.SerializeObject(res);
+        }
+
+        [Route("fetch_earnings_data")]
+        public string fetch_earnings_data(string artisan_app_id)
+        {
+            return fetch_earnings_data_(artisan_app_id);
+        }
+
+        [Route("serve_artisan_profile_picture")]
+        public FileResult serve_artisan_profile_picture(string artisan_app_id)
+        {
+            var artisan_col = globals.getDB().GetCollection<mArtisan>("mArtisan");
+            var artisan = artisan_col.Find(i => i.app_id == artisan_app_id).FirstOrDefault();
+            var image = Path.Combine(host.WebRootPath, artisan.image);
+            return File(image, "image/jpeg");
+        }
 
 
 

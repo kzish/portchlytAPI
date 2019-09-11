@@ -27,16 +27,32 @@ public class globals
 
     public static MongoClient client;
     public static IMongoDatabase database;
+
     public static string dconnectionString = "mongodb://localhost";
-    public static string supportEmail="porchlyt@gmail.com";
-    public static string privacyEmail="privacy@VPM.com";
-    public static string customerCareEmail= "consumercare@KVPM.com";
-    public static string supportMobile= "+234 812 057 2154";
-    public static string chatSupport = "<script type='text/javascript' id='553e47e969b4b7fe2b2999bada2bf72d' src='//porchlyt.com:8080/script.php?id=553e47e969b4b7fe2b2999bada2bf72d' defer></script>";
-    public static string chatSupportWithEmail = chatSupport;
-    //public static string chatSupportWithEmail = "<script type='text/javascript'>var lz_data = {overwrite:false,112:'<!--replace_me_with_Email-->'};</script><script type='text/javascript' id='553e47e969b4b7fe2b2999bada2bf72d' src='//porchlyt.com:8080/script.php?id=553e47e969b4b7fe2b2999bada2bf72d' defer></script>";
-    public static string cloudsms_api = "http://localhost:61506/api";
+    public static string supportEmail= "porchlyt@gmail.com";
     public static string MQTT_BROKER_ADDRESS = "127.0.0.1";
+    public static double company_artisan_split_value = 15;
+    public static string rave_flutter_wave_split_value = "0.15";
+    public static string rave_flutter_wave_split_type = "percentage";
+    public static string rave_flutter_wave_country = "NG";
+    public static string db_name = "porchlyt";
+    public static string cloudsms_api = "http://localhost:4444/api";
+
+
+
+
+    //online settings
+    public static string rave_flutter_wave_secret_key = "FLWSECK-08f060ffbbec93670bf3ba30d802efaf-X";//live for now test
+
+    //offline settings
+    //public static string rave_flutter_wave_secret_key = "FLWSECK-08f060ffbbec93670bf3ba30d802efaf-X";//test
+
+
+
+
+
+
+
 
     public static MqttClient mqtt;
 
@@ -51,7 +67,7 @@ public class globals
     public static IMongoDatabase getDB()
     {
         if (client == null) client = new MongoClient(dconnectionString);
-        if (database == null) database = client.GetDatabase("porchlyt");
+        if (database == null) database = client.GetDatabase(db_name);
         return database;
 
     }

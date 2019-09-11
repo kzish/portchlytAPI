@@ -95,15 +95,13 @@ namespace portchlytAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
+            services.AddDistributedMemoryCache();
+            services.AddSession(opt =>
             {
-                options.CheckConsentNeeded = context => false;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
+                opt.Cookie.IsEssential = true;
             });
-
-            services.AddSession();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>(); // <= Add this for pagination
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             //run general updates
             //services.AddSingleton<ITimer, artisan_on_map_update>();//add the timer service scheduler as a singleton
@@ -117,14 +115,12 @@ namespace portchlytAPI
             }
             else
             {
-               // app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
-            app.UseCookiePolicy();
             app.UseStaticFiles();
-            app.UseSession();
             app.UseMvc();
 
             app.Run(async (context) =>

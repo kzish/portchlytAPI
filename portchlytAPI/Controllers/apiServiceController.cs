@@ -60,11 +60,11 @@ namespace portchlytAPI.Controllers
                 acol.InsertOne(client);
 
                 //send bulk sms to user via the bulk sms api with the OTP
-                 WebClient wc = new WebClient();
+                /* WebClient wc = new WebClient();
                  wc.QueryString.Add("mobile", client.mobile);
                  wc.QueryString.Add("msg", "Your OTP is: " + OTP);
                  var data_ = wc.UploadValues(globals.cloudsms_api + "/sendSMS", "POST", wc.QueryString);
-                 var responseString = UnicodeEncoding.UTF8.GetString(data_);
+                 var responseString = UnicodeEncoding.UTF8.GetString(data_);*/
 
                 return Json(new { res = "ok", msg = "registration complete", otp = OTP });
             }
@@ -73,17 +73,18 @@ namespace portchlytAPI.Controllers
                 try
                 {
                     //send bulk sms to user via the bulk sms api with the OTP
-                     WebClient wc = new WebClient();
+                    /* WebClient wc = new WebClient();
                      wc.QueryString.Add("mobile", exist.mobile);
                      wc.QueryString.Add("msg", "Your OTP is: " + exist.otp);
                      var data_ = wc.UploadValues(globals.cloudsms_api + "/sendSMS", "POST", wc.QueryString);
-                     var responseString = UnicodeEncoding.UTF8.GetString(data_);
+                     var responseString = UnicodeEncoding.UTF8.GetString(data_);*/
                      
 
                     client._id = exist._id;//this will maintain the id
                     client.otp = exist.otp;//this maintains the otp also
                     client.app_id = exist.app_id;//maintain the app id
-                    acol.ReplaceOne(i => i.mobile == client.mobile, client);//replace it tus updating it incase any information is changed
+                    client.enabled = exist.enabled;//maintain the account status
+                    acol.ReplaceOne(i => i.mobile == client.mobile, client);//replace it thus updating it incase any information is changed
                     return Json(new { res = "ok", msg = "registration complete", otp = exist.otp, app_id=exist.app_id });
                 }
                 catch (Exception ex)
@@ -112,7 +113,12 @@ namespace portchlytAPI.Controllers
                 var update = Builders<mClient>.Update.Set(x => x.registered, true);
                 var acol = globals.getDB().GetCollection<mClient>("mClient");
                 acol.UpdateOne(x => x.mobile == m.mobile, update);//update this artisans registration status
-                return Json(new { res = "ok", msg = "registration confirmed" });
+                //also check if this client is blocked and send this information to the client
+                var client_col = globals.getDB().GetCollection<mClient>("mClient");
+                var client = client_col.Find(x => x.mobile == m.mobile).FirstOrDefault();
+                string account_status = "active";
+                if (!client.enabled) account_status = "blocked";
+                return Json(new { res = "ok", msg = "registration confirmed" , account_status = account_status });
             }
             catch (Exception ex)
             {
@@ -277,8 +283,14 @@ namespace portchlytAPI.Controllers
         [Route("fetch_artisan_profile_picture")]
         public FileResult fetch_artisan_profile_picture(string artisan_app_id)
         {
-            var image = System.IO.File.OpenRead(host.WebRootPath + "/profile_pictures/" + artisan_app_id + ".jpg");
-            return File(image, "image/jpeg");
+            try
+            {
+                var image = System.IO.File.OpenRead(host.WebRootPath + "/profile_pictures/" + artisan_app_id + ".jpg");
+                return File(image, "image/jpeg");
+            }catch(Exception ex)
+            {
+                return null;
+            }
         }
 
 
@@ -312,9 +324,7 @@ namespace portchlytAPI.Controllers
                         payment.paymentType = PaymentType.card;
                     }
 
-
-
-                    //
+                    //insert payment
                     payment_col.InsertOne(payment);
                 }
                 else
@@ -377,7 +387,7 @@ namespace portchlytAPI.Controllers
 
 
         [Route("open_dispute")]
-        public string open_dispute(string _job_id, string reason_for_dispute, string artisan_app_id)
+        public string open_dispute(string _job_id, string reason_for_dispute, string artisan_app_id,string client_app_id)
         {
             try
             {
@@ -389,6 +399,8 @@ namespace portchlytAPI.Controllers
                 var dispute = new mDispute();
                 dispute.reason_for_dispute = reason_for_dispute;
                 dispute._job_id = _job_id;
+                dispute.artisan_app_id = artisan_app_id;
+                dispute.client_app_id = client_app_id;
                 var dispute_col = globals.getDB().GetCollection<mDispute>("mDispute");
                 var exist = dispute_col.Find(i => i._job_id == _job_id).FirstOrDefault();
                 if (exist == null)//dont  insert multiple for the same
@@ -397,7 +409,12 @@ namespace portchlytAPI.Controllers
                 }
                 else
                 {
-                    var dispute_update = Builders<mDispute>.Update.Set(i => i.reason_for_dispute, reason_for_dispute);
+                    var dispute_update = Builders<mDispute>
+                        .Update
+                        .Set(i => i.reason_for_dispute, reason_for_dispute)
+                        .Set(i => i.artisan_app_id, artisan_app_id)
+                        .Set(i => i.client_app_id, client_app_id)
+                        ;
                     dispute_col.UpdateOne(i => i._job_id == _job_id, dispute_update);
                 }
 
@@ -410,12 +427,22 @@ namespace portchlytAPI.Controllers
 
                 globals.mqtt.Publish(artisan_app_id, Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(artisan_notification)), 1, false);
 
+                //send email notification to the admin to notify him of a dispute
+                var email = new globals.emailMessage();
+                email.to = globals.supportEmail;
+                email.subject = "Dispute notification";
+                email.message = System.IO.File.ReadAllText(host.WebRootPath + "/email_views/email_notification.html");
+                email.message = email.message.Replace("{{message}}", "A new dispute has been opened, log in to view the dispute");
+                Task.Run(() =>
+                {
+                    globals.sendEmail(email);
+                });
 
 
                 //return response to the client
                 dynamic json = new JObject();
                 json.res = "ok";
-                json.msg = "dipute opened";
+                json.msg = "dispute opened";
                 return JsonConvert.SerializeObject(json);
             }
             catch (Exception ex)
@@ -468,7 +495,7 @@ namespace portchlytAPI.Controllers
 
         //fetch the list of artisans on client listof artisans fragment
         [Route("fetch_the_artisans")]
-        public string fetch_the_artisans(int page, string city, string skill)
+        public string fetch_the_artisans(int page,int per_page, string city, string skill)
         {
 
             //supported locations and their geocoordintes
@@ -478,6 +505,7 @@ namespace portchlytAPI.Controllers
             supported_locations.Add("Port Harcourt", new List<double>(){ 4.824167, 7.033611 } );
             supported_locations.Add("Kano", new List<double>(){ 12.000000, 8.516667 } );
             supported_locations.Add("Lagos", new List<double>(){ 6.465422, 3.406448 } );
+            supported_locations.Add("Harare", new List<double>(){ -17.815907, 30.9018361 } );
 
             //
             var selected_city = supported_locations[city];
@@ -500,11 +528,7 @@ namespace portchlytAPI.Controllers
                 .Where(i => i.skills.Contains(skill)).ToList();
 
 
-            int page_size = 1;
-            int skip = (page - 1) * page_size;
-
-            //var artisans = artisan_col.Find(i => i.skills.Contains(skill)).ToList().Skip(skip).Take(25);
-            var artisans = list_of_artisans_with_any_of_these_services_who_are_in_the_city.Skip(skip).Take(page_size);
+            var artisans = list_of_artisans_with_any_of_these_services_who_are_in_the_city.Skip(per_page*page).Take(per_page);
 
             //serialize
             JArray ja = new JArray();
@@ -538,7 +562,11 @@ namespace portchlytAPI.Controllers
 
                 //update job status
                 var job_col = globals.getDB().GetCollection<mJobs>("mJobs");
-                var job_update = Builders<mJobs>.Update.Set(i => i.who_cancelled, Who_cancelled.client);
+                var job_update = Builders<mJobs>
+                    .Update
+                    .Set(i => i.who_cancelled, Who_cancelled.client)//set who cancelled
+                    .Set(i => i.job_status, JobStatus.cancelled)//set status
+                    ;
                 job_col.UpdateOne(i => i._job_id == _job_id, job_update);//update the job
 
                 //set artisan.busy = false
@@ -572,6 +600,67 @@ namespace portchlytAPI.Controllers
                 json.res = "err";
                 json.msg = ex.Message;
                 return JsonConvert.SerializeObject(json);
+            }
+        }
+
+
+        //obsolete
+        [Route("save_client_settings")]
+        public string save_client_settings(string data)
+        {
+            try
+            {
+                dynamic json = JsonConvert.DeserializeObject(data);
+                string client_app_id = json.app_id;
+                string client_mobile = json.mobile;
+                string client_mobile_country_code = json.mobile_country_code;
+
+                var client_col = globals.getDB().GetCollection<mClient>("mClient");
+                var client_update = Builders<mClient>.Update
+                    .Set(i => i.mobile, client_mobile)
+                    .Set(i => i.mobile_country_code, client_mobile_country_code);
+                client_col.UpdateOne(i => i.app_id == client_app_id, client_update);
+
+                dynamic res = new JObject();
+                res.res = "ok";
+                res.msg = "saved";
+                return JsonConvert.SerializeObject(res);
+
+
+            }
+            catch(Exception ex)
+            {
+                dynamic res = new JObject();
+                res.res = "err";
+                res.msg = ex.Message;
+                return JsonConvert.SerializeObject(res);
+            }
+
+        }
+
+
+        [Route("client_change_mobile")]
+        public string client_change_mobile(string mobile,string client_app_id)
+        {
+            try
+            {
+                var client_col = globals.getDB().GetCollection<mClient>("mClient");
+                var client_update = Builders<mClient>.Update
+                    .Set(i=>i.mobile,mobile)
+                    ;
+                client_col.UpdateOne(i => i.app_id == client_app_id, client_update);
+
+                dynamic res = new JObject();
+                res.res = "ok";
+                res.msg = "mobile number changed";
+                return JsonConvert.SerializeObject(res);
+            }
+            catch(Exception ex)
+            {
+                dynamic res = new JObject();
+                res.res = "err";
+                res.msg = ex.Message;
+                return JsonConvert.SerializeObject(res);
             }
         }
 

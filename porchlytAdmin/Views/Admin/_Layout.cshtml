@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.title</title>
+    @*jquery.js*@
+    <script src="~/assets/js/jquery.min.js"></script>
+    @*bs.js*@
+    <script src="~/assets/js/bootstrap.min.js"></script>
+    @*cyborge css theme*@
+    <link href="~/assets/css/bootstrap_journal.min.css" rel="stylesheet" />
+    @*myStyle css*@
+    <link href="~/assets/css/myStyle.css" rel="stylesheet" />
+    @*jquery-confirm*@
+    <link href="~/libs/jquery_alerts/jquery-confirm.min.css" rel="stylesheet" />
+    <script src="~/libs/jquery_alerts/jquery-confirm.min.js"></script>
+    @*vue*@
+    <script src="~/assets/js/vue.min.js"></script>
+    @*swith-button*@
+    <link href="~/assets/css/switch_button.css" rel="stylesheet" />
+    @*font-awesome*@
+    <link href="~/libs/fontawesome-free-5.9.0-web/css/all.css" rel="stylesheet" />
+    @*mqtt*@
+    <script src="~/assets/js/mqttws31.min.js"></script>
+
+    @*pagination*@
+    <link href="~/assets/css/pagination.css" rel="stylesheet" />
+
+
+</head>
+<body>
+
+    @if (TempData["msg"] != null)
+    {
+        <script>
+        $.alert({
+            type: "@TempData["type"]",
+            title: "Information",
+           content:"@TempData["msg"]"
+        });
+        </script>
+
+    }
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Admin</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor02">
+            <ul class="navbar-nav mr-auto">
+
+                <li class="nav-item @(ViewBag.title=="dash_board"?"active":"")">
+                    <a class="nav-link" href="/Admin/dash_board">Dashboard</a>
+                </li>
+
+                <li class="nav-item @(ViewBag.title=="artisans"?"active":"")">
+                    <a class="nav-link" href="/Admin/artisans">Artisans</a>
+                </li>
+                <li class="nav-item @(ViewBag.title=="clients"?"active":"")">
+                    <a class="nav-link" href="/Admin/clients">Clients</a>
+                </li>
+                <li class="nav-item @(ViewBag.title=="job_requests"?"active":"")">
+                    <a class="nav-link" href="/Admin/job_requests">JobRequests</a>
+                </li>
+
+                <li class="nav-item @(ViewBag.title=="jobs"?"active":"")">
+                    <a class="nav-link" href="/Admin/jobs">Jobs</a>
+                </li>
+
+
+                <li class="nav-item @(ViewBag.title=="disputes"?"active":"")">
+                    <a class="nav-link" href="/Admin/disputes">Disputes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Auth/logout">Logout</a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+
+
+
+    <div class="container">
+        <br />
+        @RenderBody()
+    </div>
+</body>
+</html>

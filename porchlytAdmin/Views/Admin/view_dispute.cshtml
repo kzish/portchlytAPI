@@ -1,0 +1,59 @@
+﻿@{
+    Layout = "_Layout";
+
+    var dispute = (portchlytAPI.Models.mDispute)ViewBag.dispute;
+}
+
+<div class="row">
+    <div class="col-md-12">
+
+
+        <form action="save_dispute_status" method="post">
+            <input type="hidden" name="dispute_id" value="@dispute._id" />
+            <div class="form-group">
+                <div class="input-group">
+                    <select name="dispute_status" class="form-control">
+                        <option value="@portchlytAPI.Models.DisputeStatus.open" selected="@(dispute.dispute_status==portchlytAPI.Models.DisputeStatus.open)">open</option>
+                        <option value="@portchlytAPI.Models.DisputeStatus.closed" selected="@(dispute.dispute_status==portchlytAPI.Models.DisputeStatus.closed)">closed</option>
+                    </select>
+                    <button type="submit" class="btn btn-success">save</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>date</label>
+                <input type="text" readonly class="form-control" value="@dispute.date" />
+            </div>
+
+
+            <div class="form-group">
+                <label>client</label>
+                <a class="form-control" href="/Admin/view_client?client_app_id=@dispute.get_client().app_id">@dispute.get_client().mobile</a>
+            </div>
+
+
+            <div class="form-group">
+                <label>artisan</label>
+                <a class="form-control" href="/Admin/view_artisan?artisan_app_id=@dispute.get_artisan().app_id">@dispute.get_artisan().mobile</a>
+            </div>
+
+            <div class="form-group">
+                <label>reason for dispute</label>
+                <input type="text" readonly class="form-control" value="@dispute.reason_for_dispute" />
+            </div>
+
+
+            <div class="form-group">
+                <label>resolution</label>
+                <textarea name="resolution" class="form-control" >@dispute.resolution</textarea>
+                <small>Either client or artisan may cancel the job and request another service...</small>
+            </div>
+
+
+
+
+        </form>
+
+
+    </div>
+</div>

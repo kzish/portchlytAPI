@@ -1,0 +1,354 @@
+﻿@{Layout = "_Layout";}
+@{ var artisan = (portchlytAPI.Models.mArtisan)ViewBag.artisan;}
+
+
+<script src="~/libs/rating/jquery.barrating.min.js"></script>
+<link href="~/libs/rating/themes/css-stars.css" rel="stylesheet" />
+
+@*chosen*@
+<script src="~/libs/chosen/chosen.jquery.min.js"></script>
+<link href="~/libs/chosen/chosen.min.css" rel="stylesheet" />
+
+
+<style>
+    .prof_image {
+        height: 200px;
+        width: 200px;
+        border: solid 1px black;
+    }
+</style>
+
+<script>
+
+    function get_address(label, lat, lng) {
+        $.ajax({
+            url: "/apiAdmin/get_address_from_geolocation?latitude=" + lat + "&longitude=" + lng,
+            success: function (address) {
+                $("#" + label).text(address);
+                $("#td_" + label).attr("title", address);
+            }
+        })
+    }
+</script>
+
+
+
+
+
+<div class="row">
+    @if (artisan.enabled)
+    {
+        <h2>Account is enabled</h2>
+        <form action="/Admin/disable_artisan_account" method="post" class="form-inline">
+            <input type="hidden" value="@artisan.app_id" name="artisan_app_id" />
+            &nbsp;&nbsp;<input type="text" class="form-control" name="reason" value="@artisan.reason_for_enable" required placeholder="reason" />
+            &nbsp;&nbsp;<button type="submit" class="btn btn-danger">Disable Account</button>
+        </form>
+    }
+    else
+    {
+        <h2>Account is dissabled</h2>
+        <form action="/Admin/enable_artisan_account" method="post" class="form-inline">
+            <input type="hidden" value="@artisan.app_id" name="artisan_app_id" />
+            &nbsp;&nbsp;<input type="text" class="form-control" name="reason"  value="@artisan.reason_for_enable" required placeholder="reason" />
+            &nbsp;&nbsp;<button type="submit" class="btn btn-success">Enable Account</button>
+        </form>
+    }
+</div>
+
+<hr />
+
+
+
+<div class="row">
+    <div class="col-md-4">
+        @if (artisan.image == null)
+        {
+            <img src="~/assets/img/ic_worker.png" class="prof_image" />
+        }
+        else
+        {
+            <img src="@(globals.porchlyt_api_base_url+"/apiArtisan/serve_artisan_profile_picture?artisan_app_id="+artisan.app_id)" class="prof_image" />
+        }
+        <br />
+        <select class="rating" readonly>
+            <option value="1" selected="@(artisan.getRating()==1)">1</option>
+            <option value="2" selected="@(artisan.getRating()==2)">2</option>
+            <option value="3" selected="@(artisan.getRating()==3)">3</option>
+            <option value="4" selected="@(artisan.getRating()==4)">4</option>
+            <option value="5" selected="@(artisan.getRating()==5)">5</option>
+        </select>
+        <br>
+        <h5>@artisan.name</h5>
+        <h5>@artisan.mobile</h5>
+
+        <h6>
+            <label id="@artisan._id">...</label>
+            <script>
+                        get_address("@artisan._id",@artisan.location.coordinates[0],@artisan.location.coordinates[1]);
+            </script>
+        </h6>
+        <br />
+        <form action="/Admin/assign_artisan_skills" method="post">
+            <input type="hidden" value="@artisan.app_id" name="artisan_app_id" />
+            <select data-placeholder="Assign skills..." multiple class="chosen-select" name="artisan_skills[]">
+                <option value="Carpentry" selected="@(artisan.skills.Contains("Carpentry"))">Carpentry</option>
+                <option value="Electricals" selected="@(artisan.skills.Contains("Electricals"))">Electricals</option>
+                <option value="Plumbing" selected="@(artisan.skills.Contains("Plumbing"))">Plumbing</option>
+                <option value="Cleaning Services" selected="@(artisan.skills.Contains("Cleaning Services"))">Cleaning Services</option>
+                <option value="Fumigation" selected="@(artisan.skills.Contains("Fumigation"))">Fumigation</option>
+                <option value="Masonry" selected="@(artisan.skills.Contains("Masonry"))">Masonry</option>
+                <option value="Painting" selected="@(artisan.skills.Contains("Painting"))">Painting</option>
+                <option value="Home Inspection" selected="@(artisan.skills.Contains("Home Inspection"))">Home Inspection</option>
+                <option value="Air Conditioner Repairs" selected="@(artisan.skills.Contains("Air Conditioner Repairs"))">Air Conditioner Repairs</option>
+                <option value="Refrigerator Repair" selected="@(artisan.skills.Contains("Refrigerator Repair"))">Refrigerator Repair</option>
+                <option value="Home/Office Relocation" selected="@(artisan.skills.Contains("Home/Office Relocation"))">Home/Office Relocation</option>
+                <option value="Tilers" selected="@(artisan.skills.Contains("Tilers"))">Tilers</option>
+                <option value="Swimming Pool Maintenance" selected="@(artisan.skills.Contains("Swimming Pool Maintenance"))">Swimming Pool Maintenance</option>
+                <option value="Gardner" selected="@(artisan.skills.Contains("Gardner"))">Gardner</option>
+                <option value="Furniture" selected="@(artisan.skills.Contains("Furniture"))">Furniture</option>
+                <option value="Generator Repairs" selected="@(artisan.skills.Contains("Generator Repairs"))">Generator Repairs</option>
+                <option value="Solar Installation" selected="@(artisan.skills.Contains("Solar Installation"))">Solar Installation</option>
+                <option value="Security Systems" selected="@(artisan.skills.Contains("Security Systems"))">Security Systems</option>
+                <option value="Roofing" selected="@(artisan.skills.Contains("Roofing"))">Roofing</option>
+                <option value="Roofing" selected="@(artisan.skills.Contains("Fencing"))">Fencing</option>
+                <option value="Laundry services" selected="@(artisan.skills.Contains("Laundry services"))">Laundry services</option>
+                <option value="Gas cooker repairs" selected="@(artisan.skills.Contains("Gas cooker repairs"))">Gas cooker repairs</option>
+            </select>
+            <br />
+            <br />
+            <button type="submit" class="btn btn-success">Assign Skills</button>
+        </form>
+    </div>
+
+    <div class="col-md-8" style="border-left:solid 1px red;">
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="card text-black mb-3">
+                    <div class="card-header">Disputes</div>
+                    <div class="card-body">
+                        <h4 class="card-title">@ViewBag.num_disputes</h4>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/Admin/disputes" style="color:#000;">view</a>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="card text-black mb-3">
+                    <div class="card-header">Jobs</div>
+                    <div class="card-body">
+                        <h4 class="card-title">@artisan.numJobs</h4>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/Admin/disputes" style="color:#000;">view</a>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+        </div>
+        <hr />
+        <h1>Grand Total</h1>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-black mb-3">
+                    <div class="card-header">
+                        <table style="width:100%">
+                            <tr>
+                                <td>
+                                    Cash Payments
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title"> @globals.getLocalCurrencyNG(ViewBag.total_cash_payments)  </h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-black mb-3">
+                    <div class="card-header">Card Payments</div>
+                    <div class="card-body">
+                        <h4 class="card-title">  @globals.getLocalCurrencyNG(ViewBag.total_card_payments)  </h4>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="card text-black mb-3">
+                    <div class="card-header">Total Payments</div>
+                    <div class="card-body">
+                        <h4 class="card-title"> @globals.getLocalCurrencyNG(ViewBag.abs_total) </h4>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="card text-black mb-3">
+                    <div class="card-header">Artisan's Earning</div>
+                    <div class="card-body">
+                        <h4 class="card-title"> @globals.getLocalCurrencyNG(ViewBag.artisans_earning) </h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-black mb-3">
+                    <div class="card-header">Company's Earning</div>
+                    <div class="card-body">
+                        <h4 class="card-title"> @globals.getLocalCurrencyNG(ViewBag.companys_cut) </h4>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <hr />
+        <h1>This Month Total</h1>
+
+
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-black mb-3">
+                    <div class="card-header">
+                        <table style="width:100%">
+                            <tr>
+                                <td>
+                                    Cash Payments
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-success" onclick="remit_artisan_cash('@artisan.app_id');">remit cash</button>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title"> @globals.getLocalCurrencyNG(ViewBag.cm_total_cash_payments)  </h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-black mb-3">
+                    <div class="card-header">Card Payments</div>
+                    <div class="card-body">
+                        <h4 class="card-title">  @globals.getLocalCurrencyNG(ViewBag.cm_total_card_payments)  </h4>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="card text-black mb-3">
+                    <div class="card-header">Total Payments</div>
+                    <div class="card-body">
+                        <h4 class="card-title"> @globals.getLocalCurrencyNG(ViewBag.cm_abs_total) </h4>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="card text-black mb-3">
+                    <div class="card-header">Artisan's Earning</div>
+                    <div class="card-body">
+                        <h4 class="card-title"> @globals.getLocalCurrencyNG(ViewBag.cm_artisans_earning) </h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-black mb-3">
+                    <div class="card-header">Company's Earning</div>
+                    <div class="card-body">
+                        <h4 class="card-title"> @globals.getLocalCurrencyNG(ViewBag.cm_companys_cut) </h4>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+</div>
+
+@*hidden forms for message passing*@
+<form action="/Admin/remit_artisan_cash" method="post" id="f1">
+    <input type="hidden" value="@artisan.app_id" name="artisan_app_id" />
+</form>
+
+
+
+
+<script>
+    $('.rating').barrating({
+        theme: 'css-stars',
+        readonly: true,
+        hoverState: false
+    });
+</script>
+
+<script>
+    $(".chosen-select").chosen({
+    });
+</script>
+
+
+<script>
+    function remit_artisan_cash(artisan_app_id) {
+        $.confirm({
+            type: "red",
+            title: "Confirmation",
+            content: "Are you sure you want to remit this cash?",
+            buttons: {
+                "yes": function () {
+                    $("#f1").submit();
+                },
+                "no": function () { }
+            }
+        });
+    }
+</script>
+

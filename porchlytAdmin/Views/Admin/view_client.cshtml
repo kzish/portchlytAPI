@@ -1,0 +1,124 @@
+﻿@{
+
+    Layout = "_Layout";
+}
+
+
+@{
+    var client = (portchlytAPI.Models.mClient)ViewBag.client;
+    var client_jobs_completed = (List<portchlytAPI.Models.mJobs>)ViewBag.client_jobs_completed;
+    var client_jobs_cancelled = (List<portchlytAPI.Models.mJobs>)ViewBag.client_jobs_cancelled;
+    var client_disputes = (List<portchlytAPI.Models.mDispute>)ViewBag.client_disputes;
+}
+
+<h4>Client: @client.mobile</h4>
+
+
+
+
+<div class="row">
+    @if (client.enabled)
+    {
+        <h2>Account is enabled</h2>
+        <form action="/Admin/disable_client_account" method="post" class="form-inline">
+            <input type="hidden" value="@client.app_id" name="client_app_id" />
+            &nbsp;&nbsp;<input type="text" class="form-control" name="reason" value="@client.reason_for_enable" required placeholder="reason" />
+            &nbsp;&nbsp;<button type="submit" class="btn btn-danger">Disable Account</button>
+        </form>
+    }
+    else
+    {
+        <h2>Account is dissabled</h2>
+        <form action="/Admin/enable_client_account" method="post" class="form-inline">
+            <input type="hidden" value="@client.app_id" name="client_app_id" />
+            &nbsp;&nbsp;<input type="text" class="form-control" name="reason" value="@client.reason_for_enable" required placeholder="reason" />
+            &nbsp;&nbsp;<button type="submit" class="btn btn-success">Enable Account</button>
+        </form>
+    }
+</div>
+
+<hr />
+
+
+<br />
+<div class="row">
+
+    <div class="col-md-4">
+        <h4>Completed Jobs</h4>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">artisan</th>
+                        <th scope="col">description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var job in client_jobs_completed)
+                    {
+                        <tr class="table-active">
+                            <td title="@job.get_artisan().name"><a href="/Admin/view_artisan?artisan_app_id=@job.artisan_app_id">@job.get_artisan().name</a></td>
+                            <td title="@job.description">@job.description</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="col-md-4">
+        <h4>Cancelled Jobs</h4>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">artisan</th>
+                        <th scope="col">description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var job in client_jobs_cancelled)
+                    {
+                        <tr class="table-active">
+                            <td title="@job.get_artisan().name"><a href="/Admin/view_artisan?artisan_app_id=@job.artisan_app_id">@job.get_artisan().name</a></td>
+                            <td title="@job.description">@job.description</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+        <h4>Disputes</h4>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Status</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Reason</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var dispute in client_disputes)
+                    {
+                        <tr>
+                            <td title="@dispute.dispute_status">@dispute.dispute_status</td>
+                            <td title="@dispute.date.ToString("d MMM yyyy")">@dispute.date.ToString("d MMM yyyy")</td>
+                            <td title="@dispute.reason_for_dispute">@dispute.reason_for_dispute</td>
+                            <td><a href="/view_dispute">Open</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>

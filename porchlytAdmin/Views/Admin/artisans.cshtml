@@ -1,0 +1,109 @@
+﻿@{ Layout = "_Layout";}
+
+@{var artisans = (IPagedList<portchlytAPI.Models.mArtisan>)ViewBag.artisans;}
+@using PagedList.Core;
+@using PagedList;
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, PagedList.Core.Mvc
+
+<script src="~/libs/rating/jquery.barrating.min.js"></script>
+<link href="~/libs/rating/themes/css-stars.css" rel="stylesheet" />
+
+<style>
+    .img_profile {
+        border-radius: 100px;
+    }
+</style>
+
+<script>
+
+    function get_address(label, lat, lng) {
+        $.ajax({
+            url: "/apiAdmin/get_address_from_geolocation?latitude=" + lat + "&longitude=" + lng,
+            success: function (address) {
+                $("#"+label).text(address);
+                $("#td_"+label).attr("title",address);
+            }
+        })
+    }
+</script>
+
+<h1>
+    Artisans
+</h1>
+
+
+<table class="table table-hover td_ellipsize">
+    <thead>
+        <tr>
+            <th scope="col">Image</th>
+            <th scope="col">Mobile</th>
+            <th scope="col">Name</th>
+            <th scope="col">Jobs</th>
+            <th scope="col">Location</th>
+            <th scope="col">Rating</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var artisan in artisans)
+        {
+            <tr class="@(artisan.enabled?"":"table-danger")">
+                <td>
+                    @if (artisan.image != null)
+                    {
+                        <img src="@(globals.porchlyt_api_base_url+"/apiArtisan/serve_artisan_profile_picture?artisan_app_id="+artisan.app_id)" height="25" width="25" class="img_profile" />
+                    }
+                    else
+                    {
+                        <img src="~/assets/img/ic_worker.png" height="25" width="25" class="img_profile" />
+                    }
+                </td>
+                <td title="@artisan.mobile">@artisan.mobile</td>
+                <td title="@artisan.name">@artisan.name</td>
+                <td title="@artisan.numJobs">@artisan.numJobs</td>
+                <td id="td_@artisan._id">
+                    <label id="@artisan._id">...</label>
+                    <script>
+                        get_address("@artisan._id",@artisan.location.coordinates[0],@artisan.location.coordinates[1]);
+                    </script>
+                </td>
+                <td title="rating @artisan.getRating()">
+
+                    <select class="rating" readonly>
+                        <option value="1" selected="@(artisan.getRating()==1)">1</option>
+                        <option value="2" selected="@(artisan.getRating()==2)">2</option>
+                        <option value="3" selected="@(artisan.getRating()==3)">3</option>
+                        <option value="4" selected="@(artisan.getRating()==4)">4</option>
+                        <option value="5" selected="@(artisan.getRating()==5)">5</option>
+                    </select>
+
+                </td>
+                <td><a href="/Admin/view_artisan?artisan_app_id=@artisan.app_id">Open</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@*pager indicator*@
+<pager class="pager-container"
+       list="@artisans"
+       options="@PagedList.Core.Mvc.PagedListRenderOptions.PageNumbersOnly"
+       asp-action="artisans"
+       asp-controller="Admin"
+       asp-route-keyword="" />
+
+
+
+
+<script>
+    $('.rating').barrating({
+        theme: 'css-stars',
+        readonly: true,
+        hoverState: false
+    });
+</script>
+
+
