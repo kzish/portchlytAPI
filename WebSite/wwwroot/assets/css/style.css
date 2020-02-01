@@ -1,0 +1,16 @@
+﻿html, body {
+    overflow-x: hidden !important;
+    font-family: 'Questrial', sans-serif;
+}
+
+.bg {
+    background-image:url('../img/henry-co-3coKbdfnAFg-unsplash.jpg');
+    background-position:center;
+    background-size:cover;
+}
+
+.footer {
+bottom:0px;
+left:0px;
+right:0px;
+}

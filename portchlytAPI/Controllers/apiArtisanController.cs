@@ -10,8 +10,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 /// <summary>
 /// this controller is for the porchlyt artisan app
@@ -36,7 +38,7 @@ namespace portchlytAPI.Controllers
 
         //todo: remove return true and open this method
         [Route("na")]
-        public bool create_artisan_sub_bank_account(mArtisan artisan, string account_bank, string account_number)
+        public async Task<bool> create_artisan_sub_bank_account(mArtisan artisan, string account_bank, string account_number,string email)
         {
             //return true;
             ///convert account_bank to a number
@@ -46,8 +48,8 @@ namespace portchlytAPI.Controllers
             mBank selected_bank = list_of_banks_in_nigeria.Where(i => i.Name == account_bank).FirstOrDefault();
 
             //create the sub account for the artisan
-            WebClient wc = new WebClient();
-            wc.Headers[HttpRequestHeader.ContentType] = "application/json";
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("ContentType", "application/json");
 
             //create json object to post
             dynamic json_post = new JObject();
@@ -59,11 +61,12 @@ namespace portchlytAPI.Controllers
             json_post.split_type = globals.rave_flutter_wave_split_type;
             json_post.split_value = globals.rave_flutter_wave_split_value;
             json_post.country = globals.rave_flutter_wave_country;
+            json_post.business_email = email;
             string json_data = json_post.ToString();
 
             //live or sandbox
-            //var data_ = wc.UploadString("https://api.ravepay.co/v2/gpx/subaccounts/create", json_data);
-            var data_ = wc.UploadString("https://ravesandboxapi.flutterwave.com/v2/gpx/subaccounts/create?", json_data);
+            var data_ = await client.PostAsync("https://api.ravepay.co/v2/gpx/subaccounts/create", new StringContent(json_data, Encoding.UTF8, "application/json")).Result.Content.ReadAsStringAsync();
+            //var data_ = await client.PostAsync("https://ravesandboxapi.flutterwave.com/v2/gpx/subaccounts/create?", new StringContent(json_data, Encoding.UTF8, "application/json")).Result.Content.ReadAsStringAsync();
             dynamic json_response = JsonConvert.DeserializeObject(data_);
             string status = json_response.status;
             if (status == "success")
@@ -89,7 +92,7 @@ namespace portchlytAPI.Controllers
             }
         }
         [Route("na")]
-        public bool update_artisan_sub_bank_account(mArtisan artisan, string account_bank, string account_number)
+        public async Task<bool> update_artisan_sub_bank_account(mArtisan artisan, string account_bank, string account_number,string email)
         {
             //return true;
             ///convert account_bank to a number
@@ -99,8 +102,8 @@ namespace portchlytAPI.Controllers
             mBank selected_bank = list_of_banks_in_nigeria.Where(i => i.Name == account_bank).FirstOrDefault();
 
             //create the sub account for the artisan
-            WebClient wc = new WebClient();
-            wc.Headers[HttpRequestHeader.ContentType] = "application/json";
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("ContentType", "application/json");
 
             //create json object to post
             dynamic json_post = new JObject();
@@ -113,11 +116,12 @@ namespace portchlytAPI.Controllers
             json_post.split_value = globals.rave_flutter_wave_split_value;
             json_post.country = globals.rave_flutter_wave_country;
             json_post.id = artisan.subaccount_id_id;
+            json_post.business_email = email;
             string json_data = json_post.ToString();
 
             //live or sandbox
-            //var data_ = wc.UploadString("https://api.ravepay.co/v2/gpx/subaccounts/edit", json_data);
-            var data_ = wc.UploadString("https://ravesandboxapi.flutterwave.com/v2/gpx/subaccounts/edit?", json_data);
+            var data_ = await client.PostAsync("https://api.ravepay.co/v2/gpx/subaccounts/edit", new StringContent(json_data, Encoding.UTF8, "application/json")).Result.Content.ReadAsStringAsync();
+            //var data_ = await client.PostAsync("https://ravesandboxapi.flutterwave.com/v2/gpx/subaccounts/edit?", new StringContent(json_data, Encoding.UTF8, "application/json")).Result.Content.ReadAsStringAsync();
             dynamic json_response = JsonConvert.DeserializeObject(data_);
             string status = json_response.status;
             if (status == "success")
@@ -443,8 +447,7 @@ namespace portchlytAPI.Controllers
                 client_notification.type = "client_job_bill_notification";
 
                 //forward all this data to the client as a notification
-                //must be a zero so it does not get stored
-                //globals.mqtt.Publish(client_app_id, Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(client_notification)), 0, false);
+                globals.mqtt.Publish(client_app_id, Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(client_notification)), 1, false);
 
 
                 //respond to the artisan request
@@ -464,7 +467,7 @@ namespace portchlytAPI.Controllers
         }
 
         [Route("update_artisan_details")]
-        public string update_artisan_details(string data)
+        public async Task<string> update_artisan_details(string data)
         {
             try
             {
@@ -485,12 +488,12 @@ namespace portchlytAPI.Controllers
                 if (String.IsNullOrEmpty(artisan.account_bank))
                 {
                     //create banking details
-                    create_artisan_sub_bank_account(artisan, account_bank, account_number);
+                    await create_artisan_sub_bank_account(artisan, account_bank, account_number,email);
                 }
                 else
                 {
                     //update banking details
-                    update_artisan_sub_bank_account(artisan, account_bank, account_number);
+                    await update_artisan_sub_bank_account(artisan, account_bank, account_number,email);
                 }
 
 
@@ -602,7 +605,7 @@ namespace portchlytAPI.Controllers
                 //check the amount of cash on hand for the client
                 var payments_col = globals.getDB().GetCollection<mPayment>("mPayment");
                 //get the cash amount that is not remitted
-                var payments_cash_total = payments_col.Find(i => i.artisan_app_id == artisan_app_id && i.paymentType == PaymentType.cash).ToList().Sum(i => i.amount_payed);
+                var payments_cash_total = payments_col.Find(i => i.artisan_app_id == artisan_app_id && i.paymentType == PaymentType.cash && !i.remitted).ToList().Sum(i => i.amount_payed);
 
                 if (payments_cash_total >= 5000)
                 {
@@ -676,6 +679,7 @@ namespace portchlytAPI.Controllers
                 var service_request_col = globals.getDB().GetCollection<mArtisanServiceRequest>("mArtisanServiceRequest").Find(i => i.notify_client_in_the_future).ToList();
                 var jobs = service_request_col
                     .Where(i => i.requested_services.Intersect(skills).Any() && i.notify_client_in_the_future)
+                    .OrderByDescending(i=>i.time_of_request)
                     .ToList()
                     .Skip(page * per_page)
                     .Take(per_page)

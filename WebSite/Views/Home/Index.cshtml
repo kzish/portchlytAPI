@@ -1,0 +1,201 @@
+﻿@{
+    Layout = "_Layout";
+    ViewBag.title = "Home";
+}
+
+@*jq*@
+<script src="~/assets/js/jquery-3.4.1.min.js"></script>
+
+@*rating*@
+<script src="~/libs/rating/jquery.barrating.min.js"></script>
+<link href="~/libs/rating/themes/fontawesome-stars.css" rel="stylesheet" />
+<link href="~/libs/rating/themes/bars-1to10.css" rel="stylesheet" />
+<link href="~/libs/rating/themes/bars-horizontal.css" rel="stylesheet" />
+<link href="~/libs/rating/themes/bars-movie.css" rel="stylesheet" />
+<link href="~/libs/rating/themes/bars-pill.css" rel="stylesheet" />
+<link href="~/libs/rating/themes/bars-reversed.css" rel="stylesheet" />
+<link href="~/libs/rating/themes/bars-square.css" rel="stylesheet" />
+<link href="~/libs/rating/themes/bootstrap-stars.css" rel="stylesheet" />
+<link href="~/libs/rating/themes/css-stars.css" rel="stylesheet" />
+<link href="~/libs/rating/themes/fontawesome-stars-o.css" rel="stylesheet" />
+<link href="~/libs/rating/themes/fontawesome-stars.css" rel="stylesheet" />
+
+
+
+<style>
+    .seletize {
+        color: black !important;
+        font-size: 25px !important;
+        background-color: aliceblue !important;
+        opacity: 0.5 !important;
+    }
+</style>
+<div id="el">
+    <div class="bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12" style="color:honeydew;">
+                    <br />
+                    <br />
+                    <center>
+                        <h1>Reimagine domestic services</h1>
+                        <h4>We’ll help you find an artisan you’ll love.</h4>
+                    </center>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div style="display:flex; align-items:center;justify-items:center;min-height:300px;">
+                        <div style="width:80%;margin:auto;">
+                            <center>
+                                <h3 style="color:white">Search for artisan</h3>
+                                <br />
+                            </center>
+                            <div class="input-group">
+                                <select class="form-control seletize" v-model="search_param">
+                                    <option>Carpentry</option>
+                                    <option>Electricals</option>
+                                    <option>Plumbing</option>
+                                    <option>Cleaning Services</option>
+                                    <option>Fumigation</option>
+                                    <option>Masonry</option>
+                                    <option>Painting</option>
+                                    <option>Home Inspection</option>
+                                    <option>Air Conditioner Repairs</option>
+                                    <option>Refrigerator Repair</option>
+                                    <option>Home/Office Relocation</option>
+                                    <option>Tilers</option>
+                                    <option>Swimming Pool Maintenance</option>
+                                    <option>Gardner</option>
+                                    <option>Furniture</option>
+                                    <option>Generator Repairs</option>
+                                    <option>Solar Installation</option>
+                                    <option>Security Systems</option>
+                                    <option>Roofing</option>
+                                    <option>Fencing</option>
+                                    <option>Laundry services</option>
+                                    <option>Gas cooker repairs</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <button class="btn btn-danger" type="button" @@click="search_artisans()">
+                                        <img src="~/assets/img/spinner.gif" height="35" width="35" v-if="searching" />
+                                        Find Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*search results must come here*@
+    <br />
+    <div class="container" v-html="search_results">
+    </div>
+
+    <br />
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <center>
+                    <div style="font-size:25px;">
+                        We have the highest standards and quality services.
+                        <br />So you’ll only get the best.
+                    </div>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function get_address(label, lat, lng) {
+        $.ajax({
+            url: "/Search/get_address_from_geolocation?latitude=" + lat + "&longitude=" + lng,
+            success: function (address) {
+                $("#" + label).text(address);
+                $("#td_" + label).attr("title", address);
+            }
+        })
+    }
+</script>
+
+<script>
+    var vm = new Vue({
+        el: '#el',
+        data: {
+            search_param: null,
+            searching: false,
+            search_results: ''
+        },
+        methods: {
+            //searhc for an artisan with the skill
+            search_artisans() {
+                console.log('vm.search_param', vm.search_param)
+                if (vm.search_param == null || vm.search_param == '') {
+                    toastr.error('Select a service first.', 'Information')
+                    return;
+                }
+               
+                if (Modernizr.geolocation) {
+                    vm.searching = true
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        vm.searching = true
+                        axios.get('/Search/findServiceArtisan', {
+                            params: {
+                                lat: position.coords.latitude,
+                                lon: position.coords.longitude,
+                                services: vm.search_param
+                            }
+                        }).then(function (data) {
+                            vm.search_results = data.data
+                            setTimeout(function () {
+                                $('.rating').barrating({
+                                    theme: 'css-stars',
+                                    readonly: true,
+                                    hoverState: false
+                                });
+                            }, 100)
+                            console.log(data)
+                        }).catch(function (error) {
+                            toastr.error('An Error occured', 'Error')
+                            console.error(error)
+                        }).finally(function () {
+                            vm.searching = false;
+                        })
+
+                    }, showError);
+                } else {
+                    toastr.error("Enable your geolocation to use this service", "Geolocation is not supported by this browser.");
+                }
+            }
+        },
+        mounted: function () {
+            console.log('mounted')
+        },
+    });
+
+
+    function showError(error) {
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                vm.searching=false
+                toastr.error("User denied the request for Geolocation.", "Geolocation Error");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                vm.searching=false
+                toastr.error("Location information is unavailable.", "Geolocation Error");
+                break;
+            case error.TIMEOUT:
+                vm.searching=false
+                toastr.error("The request to get user location timed out.", "Geolocation Error");
+                break;
+            case error.UNKNOWN_ERROR:
+                vm.searching=false
+                toastr.error("An unknown error occurred.", "Geolocation Error");
+                break;
+        }
+    }
+</script>

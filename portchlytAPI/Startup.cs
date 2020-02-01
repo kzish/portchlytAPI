@@ -38,6 +38,8 @@ namespace portchlytAPI
             clientId = "123Server"+Guid.NewGuid().ToString();
             //connect to the mqtt client
             globals.mqtt.Connect(clientId);
+            //alert server is connected
+            globals.mqtt.Publish(subscriptions[0],Encoding.UTF8.GetBytes("server connected "+ DateTime.Now));
             //subscribe to the topic "/server" with QoS 1 
             globals.mqtt.Subscribe(subscriptions, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
 

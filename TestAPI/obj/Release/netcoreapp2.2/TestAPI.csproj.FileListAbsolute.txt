@@ -1,0 +1,16 @@
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\bin\Release\netcoreapp2.2\appsettings.Development.json
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\bin\Release\netcoreapp2.2\appsettings.json
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\bin\Release\netcoreapp2.2\Properties\launchSettings.json
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\bin\Release\netcoreapp2.2\TestAPI.deps.json
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\bin\Release\netcoreapp2.2\TestAPI.runtimeconfig.json
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\bin\Release\netcoreapp2.2\TestAPI.runtimeconfig.dev.json
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\bin\Release\netcoreapp2.2\TestAPI.dll
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\bin\Release\netcoreapp2.2\TestAPI.pdb
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\obj\Release\netcoreapp2.2\TestAPI.csprojAssemblyReference.cache
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\obj\Release\netcoreapp2.2\TestAPI.RazorAssemblyInfo.cache
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\obj\Release\netcoreapp2.2\TestAPI.RazorAssemblyInfo.cs
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\obj\Release\netcoreapp2.2\TestAPI.AssemblyInfoInputs.cache
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\obj\Release\netcoreapp2.2\TestAPI.AssemblyInfo.cs
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\obj\Release\netcoreapp2.2\TestAPI.RazorTargetAssemblyInfo.cache
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\obj\Release\netcoreapp2.2\TestAPI.dll
+C:\Users\samaritan\Documents\Visual Studio 2017\projects\sirach\portchlytAPI\TestAPI\obj\Release\netcoreapp2.2\TestAPI.pdb

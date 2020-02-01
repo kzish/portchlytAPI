@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using portchlytAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -170,7 +171,7 @@ namespace portchlytAPI.Controllers
 
                 //collect all artisans who has one or more of the skills and are available and are within 100km range in order of closeness
                 var list_of_artisans_with_any_of_these_services_who_are_availalable = artisans_within_100_km_of_the_client
-                    .Where(i => i.skills.Intersect(services).Any()
+                    .Where(i => i.skills!=null && i.skills.Intersect(services).Any()
                      && i.on_duty
                      && !i.busy)
                      .ToList()
@@ -178,10 +179,10 @@ namespace portchlytAPI.Controllers
                      .ToList()
                      ;
                 //fire and forget this thread
-                Task.Run(() =>
-                {
+                ///Task.Run(() =>
+                ///{
                     NotifyArtisansForTask(request_id, list_of_artisans_with_any_of_these_services_who_are_availalable);
-                });
+                ///});
                 return Json(new { res = "ok", msg = "results will be returned via mqtt" });
             }
             catch (Exception ex)
@@ -431,7 +432,8 @@ namespace portchlytAPI.Controllers
                 var email = new globals.emailMessage();
                 email.to = globals.supportEmail;
                 email.subject = "Dispute notification";
-                email.message = System.IO.File.ReadAllText(host.WebRootPath + "/email_views/email_notification.html");
+                var email_view=Path.Combine(host.WebRootPath, "email_views/email_notification.html");
+                email.message = System.IO.File.ReadAllText(email_view);
                 email.message = email.message.Replace("{{message}}", "A new dispute has been opened, log in to view the dispute");
                 Task.Run(() =>
                 {
@@ -497,14 +499,14 @@ namespace portchlytAPI.Controllers
         [Route("fetch_the_artisans")]
         public string fetch_the_artisans(int page,int per_page, string city, string skill)
         {
-
+            List<string> maskills = new List<string>() { skill };
             //supported locations and their geocoordintes
             Dictionary<string, List<double>> supported_locations = new Dictionary<string, List<double>>();
             //supported_locations.Add("Abuja FCT", new List<double>(){ 9.0016626, 7.4219573 } );
             supported_locations.Add("Abuja FCT", new List<double>(){ 9.072264, 7.491302} );
             supported_locations.Add("Port Harcourt", new List<double>(){ 4.824167, 7.033611 } );
             supported_locations.Add("Kano", new List<double>(){ 12.000000, 8.516667 } );
-            supported_locations.Add("Lagos", new List<double>(){ 6.465422, 3.406448 } );
+            supported_locations.Add("Lagos", new List<double>(){ 6.000000, 3.000000 } );
             supported_locations.Add("Harare", new List<double>(){ -17.815907, 30.9018361 } );
 
             //
@@ -525,7 +527,7 @@ namespace portchlytAPI.Controllers
 
             //collect all artisans who has one or more of the skills and are available and are within 100km range in order of closeness
             var list_of_artisans_with_any_of_these_services_who_are_in_the_city = artisans_within_100_km_of_the_city
-                .Where(i => i.skills.Contains(skill)).ToList();
+                .Where(i => i.skills!=null && i.skills.Intersect(maskills).Any()).ToList();
 
 
             var artisans = list_of_artisans_with_any_of_these_services_who_are_in_the_city.Skip(per_page*page).Take(per_page);

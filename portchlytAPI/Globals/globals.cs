@@ -31,6 +31,7 @@ public class globals
     public static string dconnectionString = "mongodb://localhost";
     public static string supportEmail= "porchlyt@gmail.com";
     public static string MQTT_BROKER_ADDRESS = "127.0.0.1";
+    //public static string MQTT_BROKER_ADDRESS = "18.223.32.143";
     public static double company_artisan_split_value = 15;
     public static string rave_flutter_wave_split_value = "0.15";
     public static string rave_flutter_wave_split_type = "percentage";
@@ -42,10 +43,13 @@ public class globals
 
 
     //online settings
-    public static string rave_flutter_wave_secret_key = "FLWSECK-08f060ffbbec93670bf3ba30d802efaf-X";//live for now test
+    //live
+    public static string rave_flutter_wave_secret_key = "FLWSECK-8affddf7e942609477eb7a91e7a3de55-X";
 
     //offline settings
-    //public static string rave_flutter_wave_secret_key = "FLWSECK-08f060ffbbec93670bf3ba30d802efaf-X";//test
+    //test
+    //public static string rave_flutter_wave_secret_key = "FLWSECK-08f060ffbbec93670bf3ba30d802efaf-X";
+
 
 
 

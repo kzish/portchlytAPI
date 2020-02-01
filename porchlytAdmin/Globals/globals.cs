@@ -37,18 +37,21 @@ public class globals
     public static string rave_flutter_wave_country = "NG";
     public static string db_name = "porchlyt";
     public static string cloudsms_api = "http://localhost:4444/api";
-    //public static string porchlyt_api_base_url = "http://localhost:1111";
-    public static string porchlyt_api_base_url = "http://18.222.225.98:1111";
+    //public static string porchlyt_api_base_url = "http://localhost:1000";
+    public static string porchlyt_api_base_url = "http://etixng.com:1000";
 
 
 
 
 
     //online settings
-    public static string rave_flutter_wave_secret_key = "FLWSECK-08f060ffbbec93670bf3ba30d802efaf-X";//live for now test
+    //live
+    public static string rave_flutter_wave_secret_key = "FLWSECK-8affddf7e942609477eb7a91e7a3de55-X";
 
     //offline settings
-    //public static string rave_flutter_wave_secret_key = "FLWSECK-08f060ffbbec93670bf3ba30d802efaf-X";//test
+    //test
+    //public static string rave_flutter_wave_secret_key = "FLWSECK-08f060ffbbec93670bf3ba30d802efaf-X";
+
 
 
 

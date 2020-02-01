@@ -1,0 +1,58 @@
+﻿@model List<portchlytAPI.Models.mArtisan>
+
+@*run all scripts at the client when recieved*@
+
+@if (Model.Count == 0)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <center>
+                <h2 style="color:red;">No results.</h2>
+            </center>
+        </div>
+    </div>
+}
+
+<div class="row">
+    @foreach (var artisan in Model)
+    {
+        <div class="col-md-3">
+            <div class="card mb-3">
+                @*<h3 class="card-header">@artisan.name @artisan.surname</h3>*@
+                <div class="card-body">
+                    <h6>
+                        @artisan.name @artisan.surname
+                    </h6>
+                    <select class="rating" readonly>
+                        <option value="1" selected="@(artisan.getRating() == 1)">1</option>
+                        <option value="2" selected="@(artisan.getRating() == 2)">2</option>
+                        <option value="3" selected="@(artisan.getRating() == 3)">3</option>
+                        <option value="4" selected="@(artisan.getRating() == 4)">4</option>
+                        <option value="5" selected="@(artisan.getRating() == 5)">5</option>
+                    </select>
+                    <br>
+                    <h6>@artisan.mobile</h6>
+                    <h6 class="card-subtitle text-muted">
+                        <label id="@artisan._id">
+                            @globals.get_address_from_geolocation(artisan.location.coordinates[0],@artisan.location.coordinates[1]).Result
+                        </label>
+                    </h6>
+                    @foreach (var skill in artisan.skills)
+                    {
+                        <i>@skill </i>
+                    }
+                </div>
+                <img src="~/assets/img/ic_worker.png" class="prof_image" style="height: 200px; width: 100%; display: block;" />
+                @*@if (artisan.image == null)
+                {
+                    <img src="~/assets/img/ic_worker.png" class="prof_image" style="height: 200px; width: 100%; display: block;" />
+                }
+                else
+                {
+                    <img style="height: 200px; width: 100%; display: block;" src="@(globals.porchlyt_api_base_url + "/apiArtisan/serve_artisan_profile_picture?artisan_app_id=" + artisan.app_id)" />
+                }*@
+            </div>
+        </div>
+    }
+</div>
+

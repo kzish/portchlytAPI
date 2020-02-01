@@ -6248,7 +6248,7 @@
       ]
     },
     "Microsoft.CSharp/4.5.0": {
-      "sha512": "kaj6Wb4qoMuH3HySFJhxwQfe8R/sJsNJnANrvv8WdFPMoNbKY5htfNscv+LHCu5ipz+49m2e+WQXpLXr9XYemQ==",
+      "sha512": "tmi8nIq+A63d+eQeoEH39lVEs137aNCqXAU7s/6v5fwgvCIAn0qj3+dYRnSdXEoiEfkUiAgG54BC3wChQkbrTA==",
       "type": "package",
       "path": "microsoft.csharp/4.5.0",
       "files": [
@@ -6316,7 +6316,7 @@
       ]
     },
     "Microsoft.DotNet.PlatformAbstractions/2.1.0": {
-      "sha512": "9KPDwvb/hLEVXYruVHVZ8BkebC8j17DmPb56LnqRF74HqSPLjCkrlFUjOtFpQPA2DeADBRTI/e69aCfRBfrhxw==",
+      "sha512": "UJc8Jg7S7HY0AljA0FzIIqlMaVWNFPgAQ1Bp6g2KiHfoQwdloCUdVcw16VWJfbpBLny0CvQvAF3PtpRrCw6adw==",
       "type": "package",
       "path": "microsoft.dotnet.platformabstractions/2.1.0",
       "files": [
@@ -6663,7 +6663,7 @@
       ]
     },
     "Microsoft.Extensions.DependencyModel/2.1.0": {
-      "sha512": "nS2XKqi+1A1umnYNLX2Fbm/XnzCxs5i+zXVJ3VC6r9t2z0NZr9FLnJN4VQpKigdcWH/iFTbMuX6M6WQJcTjVIg==",
+      "sha512": "vfNdtPcdGVDgPDH71F0foUVea2Ibt6W/6N8gruxczhgISGZ+6gJ6ZwJkRR4uU91ViNuFUCn4HTbxu7XebdzMtA==",
       "type": "package",
       "path": "microsoft.extensions.dependencymodel/2.1.0",
       "files": [
@@ -8075,7 +8075,7 @@
       ]
     },
     "runtime.native.System.Net.Security/4.3.0": {
-      "sha512": "ARfgeRYF2AnYIcqEvy9VE0agN/3zexMMPtcegq1THpOMS63rIGMi706vCo6pbv9Xzw4qhdX1Gu1zyLZHj2WtLA==",
+      "sha512": "my+CYNTo7loSZBoXroJSFWEzif/r/bpeRg29r1mwqCHHFhPd4flSTNra26UwificifkPCnYw7clQGy6nMJsF2Q==",
       "type": "package",
       "path": "runtime.native.system.net.security/4.3.0",
       "files": [
@@ -8226,7 +8226,7 @@
       ]
     },
     "runtime.win-arm64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
-      "sha512": "LbrynESTp3bm5O/+jGL8v0Qg5SJlTV08lpIpFesXjF6uGNMWqFnUQbYBJwZTeua6E/Y7FIM1C54Ey1btLWupdg==",
+      "sha512": "2X3PQ+8F+2V2aDbbSnhX8hmHw6DyxzuJKCMMeO8llwIw6+2X1egCLnOktbCoULru6jlPkr3Avkui81c9xbKRLQ==",
       "type": "package",
       "path": "runtime.win-arm64.runtime.native.system.data.sqlclient.sni/4.4.0",
       "files": [
@@ -8241,7 +8241,7 @@
       ]
     },
     "runtime.win-x64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
-      "sha512": "38ugOfkYJqJoX9g6EYRlZB5U2ZJH51UP8ptxZgdpS07FgOEToV+lS11ouNK2PM12Pr6X/PpT5jK82G3DwH/SxQ==",
+      "sha512": "WWnIN+hbdmjZNwKKI82lAC3kFIgjjawoGpHaGlABUe0LRQK9tuq42VMerdZzrvwVUOaH0TuxXgd/7XBIlwd1BA==",
       "type": "package",
       "path": "runtime.win-x64.runtime.native.system.data.sqlclient.sni/4.4.0",
       "files": [
@@ -8256,7 +8256,7 @@
       ]
     },
     "runtime.win-x86.runtime.native.System.Data.SqlClient.sni/4.4.0": {
-      "sha512": "YhEdSQUsTx+C8m8Bw7ar5/VesXvCFMItyZF7G1AUY+OM0VPZUOeAVpJ4Wl6fydBGUYZxojTDR3I6Bj/+BPkJNA==",
+      "sha512": "UbARBBYJ8D3k5Pq2Dk6xdeCLtxGAtpYtIvXVDFB/BjuFvVEbUy/jr6+QFFBJTNubUQl265RsBJN8nCQK49dAdA==",
       "type": "package",
       "path": "runtime.win-x86.runtime.native.system.data.sqlclient.sni/4.4.0",
       "files": [
@@ -8527,7 +8527,7 @@
       ]
     },
     "System.Collections.NonGeneric/4.3.0": {
-      "sha512": "prtjIEMhGUnQq6RnPEYLpFt8AtLbp9yq2zxOSrY7KJJZrw25Fi97IzBqY7iqssbM61Ek5b8f3MG/sG1N2sN5KA==",
+      "sha512": "6VbLp8tI2L+sv9GiFSOPYJjgIULXpZVjoP2cMbfGVIkWx7KhfCz1bRnUDB3aOIagiDScMPfsUwZN73wmXqBw1A==",
       "type": "package",
       "path": "system.collections.nongeneric/4.3.0",
       "files": [
@@ -8565,7 +8565,7 @@
       ]
     },
     "System.Collections.Specialized/4.3.0": {
-      "sha512": "Epx8PoVZR0iuOnJJDzp7pWvdfMMOAvpUo95pC4ScH2mJuXkKA2Y4aR3cG9qt2klHgSons1WFh4kcGW7cSXvrxg==",
+      "sha512": "9PxvheyegxwBaRDVhCXjaRaClQcdgIgjAgXt6xYn/lkvo2VVr9gPmm3GjzGHI8cKQkbUB1VvH/wSzt8Z9ZJzOw==",
       "type": "package",
       "path": "system.collections.specialized/4.3.0",
       "files": [
@@ -8661,7 +8661,7 @@
       ]
     },
     "System.ComponentModel.Annotations/4.5.0": {
-      "sha512": "UxYQ3FGUOtzJ7LfSdnYSFd7+oEv6M8NgUatatIN2HxNtDdlcvFAf+VIq4Of9cDMJEJC0aSRv/x898RYhB4Yppg==",
+      "sha512": "Tkiw+5NpbG1WM8NtaqjB/FsbsyTdRQzdMB/vRn+NdyWq2kI9nOwzvqkKctu9UpWfEQvgOSWGHYl8S0vQL/b00g==",
       "type": "package",
       "path": "system.componentmodel.annotations/4.5.0",
       "files": [
@@ -8877,7 +8877,7 @@
       ]
     },
     "System.Data.SqlClient/4.6.0": {
-      "sha512": "gwItUWW1BMCckicFO85c8frFaMK8SGqYn5IeA3GSX4Lmid+CjXETfoHz7Uv+Vx6L0No7iRc/7cBL8gd6o9k9/g==",
+      "sha512": "D6m/Lkn0FyViNxVs02TFHU24RsRl+jqem5ukUMmQa/uy5NRIL0Zfk2OLybwAHq7qyGmDTbcPTGkFMlCNZVO16g==",
       "type": "package",
       "path": "system.data.sqlclient/4.6.0",
       "files": [
@@ -8951,7 +8951,7 @@
       ]
     },
     "System.Diagnostics.Contracts/4.3.0": {
-      "sha512": "eelRRbnm+OloiQvp9CXS0ixjNQldjjkHO4iIkR5XH2VIP8sUB/SIpa1TdUW6/+HDcQ+MlhP3pNa1u5SbzYuWGA==",
+      "sha512": "+9yNrxAIgTp3mMt2IYdRs0kuWLCDpAqREhM2aoVz5S1hXP7GHX519ZASUwFVxkKBf9cRmyXM+/ANIG3Qfob/gg==",
       "type": "package",
       "path": "system.diagnostics.contracts/4.3.0",
       "files": [
@@ -9199,7 +9199,7 @@
       ]
     },
     "System.Diagnostics.StackTrace/4.3.0": {
-      "sha512": "BiHg0vgtd35/DM9jvtaC1eKRpWZxr0gcQd643ABG7GnvSlf5pOkY2uyd42mMOJoOmKvnpNj0F4tuoS1pacTwYw==",
+      "sha512": "jafWjOBvCV0KrzoTS3KRp8LDxCrM01Lu4McBcVaxEEkL0KC4I5f6+OV3TErhhm1uLAJd6u9ktHNl+PQd669K7Q==",
       "type": "package",
       "path": "system.diagnostics.stacktrace/4.3.0",
       "files": [
@@ -9461,7 +9461,7 @@
       ]
     },
     "System.Dynamic.Runtime/4.3.0": {
-      "sha512": "SNVi1E/vfWUAs/WYKhE9+qlS6KqK0YVhnlT0HQtr8pMIA8YX3lwy3uPMownDwdYISBdmAF/2holEIldVp85Wag==",
+      "sha512": "SYLqMOvq9kEeC1Fg3sTK8Wag0329OC9M1jOsSOM9B3Ay6H3OOMoDy3s8SBOpSKCsaIJ+CHFWhpWR2ujpozz/JA==",
       "type": "package",
       "path": "system.dynamic.runtime/4.3.0",
       "files": [
@@ -10571,7 +10571,7 @@
       ]
     },
     "System.Private.DataContractSerialization/4.3.0": {
-      "sha512": "yDaJ2x3mMmjdZEDB4IbezSnCsnjQ4BxinKhRAaP6kEgL6Bb6jANWphs5SzyD8imqeC/3FxgsuXT6ykkiH1uUmA==",
+      "sha512": "yzsVE15+rpuvKI6ffT2vjfAkk8j1wofQYReWOyD3A88er/cNKvtBxRjehCAoSDECm21CX/f2b7HvFDKU5HGaWQ==",
       "type": "package",
       "path": "system.private.datacontractserialization/4.3.0",
       "files": [
@@ -11474,7 +11474,7 @@
       ]
     },
     "System.Runtime.Serialization.Primitives/4.3.0": {
-      "sha512": "Wz+0KOukJGAlXjtKr+5Xpuxf8+c8739RI1C+A2BoQZT+wMCCoMDDdO8/4IRHfaVINqL78GO8dW8G2lW/e45Mcw==",
+      "sha512": "ItGhCYt8uIwbbXAK9M1v8O/alyY0CX3eWbCbBCk8D/Y3tNzfuciklE54IQ676Td+sRbR1hN2jy3KtD3N/k45aw==",
       "type": "package",
       "path": "system.runtime.serialization.primitives/4.3.0",
       "files": [
@@ -11546,7 +11546,7 @@
       ]
     },
     "System.Runtime.Serialization.Xml/4.3.0": {
-      "sha512": "nUQx/5OVgrqEba3+j7OdiofvVq9koWZAC7Z3xGI8IIViZqApWnZ5+lLcwYgTlbkobrl/Rat+Jb8GeD4WQESD2A==",
+      "sha512": "8D8ltAB8JD5OQ2ds1shfFObd3L7BFhjwvaR3waDMToudwdwM++5bsqj/UKLe4oPHyEj3zxJOGEOXZsJ3Kx7bEA==",
       "type": "package",
       "path": "system.runtime.serialization.xml/4.3.0",
       "files": [
@@ -12634,7 +12634,7 @@
       ]
     },
     "System.Threading.Tasks.Parallel/4.3.0": {
-      "sha512": "cbjBNZHf/vQCfcdhzx7knsiygoCKgxL8mZOeocXZn5gWhCdzHIq6bYNKWX0LAJCWYP7bds4yBK8p06YkP0oa0g==",
+      "sha512": "pWJQLFpMW4IREyWw7osGRMdglofVYz/hY5wcPhPZLe21tJ7x9gMTT4r8D4mLMR3h3P4IfIBvK/doGjkhbHTMxQ==",
       "type": "package",
       "path": "system.threading.tasks.parallel/4.3.0",
       "files": [
@@ -12962,7 +12962,7 @@
       ]
     },
     "System.Xml.XmlSerializer/4.3.0": {
-      "sha512": "VShQJhOxgD/5M2Z1IWm1vMaSqlbjo1zdFf8H7Ahte6bTvSUhUko/gDpAVVhGgGgTDeue4QyNg1fu1Zz2GKSEuQ==",
+      "sha512": "XAxVDmPQ6gOoN5DyfDWyccBc6pAI7lDlysENLZe+VANJL7N+JyH9gO8MMmG4YYYFix/8jY7oZiIm+DdwjBdLCw==",
       "type": "package",
       "path": "system.xml.xmlserializer/4.3.0",
       "files": [
@@ -13126,11 +13126,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\samaritan\\Documents\\Visual Studio 2017\\projects\\portchlytAPI\\porchlytAdmin\\porchlytAdmin.csproj",
+      "projectUniqueName": "C:\\Users\\samaritan\\Documents\\Visual Studio 2017\\projects\\sirach\\portchlytAPI\\porchlytAdmin\\porchlytAdmin.csproj",
       "projectName": "porchlytAdmin",
-      "projectPath": "C:\\Users\\samaritan\\Documents\\Visual Studio 2017\\projects\\portchlytAPI\\porchlytAdmin\\porchlytAdmin.csproj",
+      "projectPath": "C:\\Users\\samaritan\\Documents\\Visual Studio 2017\\projects\\sirach\\portchlytAPI\\porchlytAdmin\\porchlytAdmin.csproj",
       "packagesPath": "C:\\Users\\samaritan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\samaritan\\Documents\\Visual Studio 2017\\projects\\portchlytAPI\\porchlytAdmin\\obj\\",
+      "outputPath": "C:\\Users\\samaritan\\Documents\\Visual Studio 2017\\projects\\sirach\\portchlytAPI\\porchlytAdmin\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -13195,10 +13195,16 @@
           }
         },
         "imports": [
-          "net461"
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
         ],
         "assetTargetFallback": true,
-        "warn": true
+        "warn": true,
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }

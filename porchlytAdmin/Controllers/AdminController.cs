@@ -93,7 +93,7 @@ namespace portchlytAPI.Controllers
 
             var job_requests_col = globals.getDB().GetCollection<mArtisanServiceRequest>("mArtisanServiceRequest");
             var list_of_job_requests = job_requests_col.Find(i => i._id != null).ToList();
-            var job_requests = (from d in list_of_job_requests select d).AsQueryable().ToPagedList(page, items_per_page);
+            var job_requests = (from d in list_of_job_requests select d ).OrderByDescending(x => x.time_of_request).AsQueryable().ToPagedList(page, items_per_page);
             ViewBag.job_requests = job_requests;
             return View();
         }
@@ -155,8 +155,8 @@ namespace portchlytAPI.Controllers
 
 
             //for this current month wc have not been remitted
-            var cm_cash_payments = cash_payments.Where(i => i.date.Month == DateTime.Now.Month ).ToList(); //payment_col.Find(i => i.artisan_app_id == artisan.app_id && i.paymentType == PaymentType.cash  && i.date.Month == DateTime.Now.Month).ToList();
-            var cm_card_payments = card_payments.Where(i => i.date.Month == DateTime.Now.Month ).ToList();//payment_col.Find(i => i.artisan_app_id == artisan.app_id && i.paymentType == PaymentType.card && i.date.Month == DateTime.Now.Month).ToList();
+            var cm_cash_payments = cash_payments.Where(i => i.date.Month == DateTime.Now.Month && !i.remitted).ToList(); //payment_col.Find(i => i.artisan_app_id == artisan.app_id && i.paymentType == PaymentType.cash  && i.date.Month == DateTime.Now.Month).ToList();
+            var cm_card_payments = card_payments.Where(i => i.date.Month == DateTime.Now.Month && !i.remitted).ToList();//payment_col.Find(i => i.artisan_app_id == artisan.app_id && i.paymentType == PaymentType.card && i.date.Month == DateTime.Now.Month).ToList();
             double cm_total_card_payments = cm_card_payments.Sum(i => i.amount_payed);
             double cm_total_cash_payments = cm_cash_payments.Sum(i => i.amount_payed);
             double cm_abs_total = cm_total_card_payments + cm_total_cash_payments;
