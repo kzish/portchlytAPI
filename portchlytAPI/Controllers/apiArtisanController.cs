@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 /// </summary>
 namespace portchlytAPI.Controllers
 {
-    [Route("apiArtisan")]
+    [Route("apiArtisan")] 
     public class apiArtisanController : Controller
     {
         [Route("")]
